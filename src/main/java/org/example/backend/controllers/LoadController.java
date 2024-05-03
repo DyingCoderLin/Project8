@@ -1,5 +1,6 @@
 package org.example.backend.controllers;
 
+import org.example.backend.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000",allowCredentials = "true")
+//@CrossOrigin(origins = "http://localhost:3000",allowCredentials = "true")
 public class LoadController {
     /*
     TODO:
@@ -21,10 +22,13 @@ public class LoadController {
      */
 
     //向日志中加载receive request
-
+    @Autowired
+    private EventService eventService;
 
     @PostMapping("/loadEventInfo")
     public String loadEventInfo(String eventId) {
+        final Logger log = LoggerFactory.getLogger(LoadController.class);
+        log.info("receive loadEventInfo");
         return "loadEventInfo";
     }
 
