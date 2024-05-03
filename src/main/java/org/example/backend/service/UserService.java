@@ -1,32 +1,36 @@
 package org.example.backend.service;
 
+import org.example.backend.model.EventTable;
 import org.example.backend.model.User;
+import org.example.backend.repository.EventTableRepository;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.example.backend.repository.UserRepository;
+import org.springframework.web.bind.annotation.PathVariable;
+
+import java.util.Set;
 
 
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
+    private final EventTableRepository eventTableRepository;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, EventTableRepository eventTableRepository) {
         this.userRepository = userRepository;
+        this.eventTableRepository = eventTableRepository;
     }
 
-    public boolean isPasswardCorrect(String userID, String password) {
-        final Logger log = org.slf4j.LoggerFactory.getLogger(UserService.class);
-        log.info("to here0");
+    public User isPasswardCorrect(String userID, String password) {
         User user = userRepository.findByUserID(userID);
-        log.info("to here1");
-        if(user!=null) {
-            log.info("to here2");
-            return user.getPassword().equals(password);
-        }
-        return false;
+        return user;
+//        if(user!=null) {
+//            return user.getPassword().equals(password);
+//        }
+//        return false;
     }
 
     public boolean saveUser(User user) {
@@ -37,5 +41,16 @@ public class UserService {
         else {
             return false;
         }
+    }
+
+    public Set<EventTable> getEventTablesByuserID(String userID) {
+        User user = userRepository.findByUserID(userID);
+        final Logger log = org.slf4j.LoggerFactory.getLogger(UserService.class);
+        log.info("tohere1");
+        log.info(user.getUserID());
+//        if (user != null) {
+            return user.getEventTables();
+//        }
+//        return null; // or return an empty set if preferred
     }
 }

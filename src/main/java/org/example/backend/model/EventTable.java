@@ -33,13 +33,18 @@ public class EventTable {
     @Column(name = "weekAmount")
     private Integer weekAmount;
 
-    @Column(name = "for_userID")
-    private String for_userID;
+    @Column(name = "defaulttable")
+    private boolean defaultTable;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "for_userID")
+    private User user;
 
     public EventTable() {
     }
 
-    public EventTable(String tableName, String background, String font, Integer courseColor, Integer eventColor, Date firstDayDate, Integer weekAmount, String for_userID) {
+    public EventTable(Integer tableID,String tableName, String background, String font, Integer courseColor, Integer eventColor, Date firstDayDate, Integer weekAmount,boolean defaultTable) {
+        this.tableID = tableID;
         this.tableName = tableName;
         this.background = background;
         this.font = font;
@@ -47,7 +52,8 @@ public class EventTable {
         this.eventColor = eventColor;
         this.firstDayDate = firstDayDate;
         this.weekAmount = weekAmount;
-        this.for_userID = for_userID;
+        this.defaultTable = false;
+//        this.for_userID = for_userID;
     }
 
     // getters
@@ -59,7 +65,10 @@ public class EventTable {
     public Integer getEventColor() { return eventColor; }
     public Date getFirstDayDate() { return firstDayDate; }
     public Integer getWeekAmount() { return weekAmount; }
-    public String getFor_userID() { return for_userID; }
+//    public String getFor_userID() { return for_userID; }
+//    public String getFor_userID() { return user.getUserID(); }
+    public User getUser() { return user; }
+    public boolean getDefaultTable() { return defaultTable; }
 
     // setters
     public void setTableID(Integer tableID) { this.tableID = tableID; }
@@ -70,6 +79,9 @@ public class EventTable {
     public void setEventColor(Integer eventColor) { this.eventColor = eventColor; }
     public void setFirstDayDate(Date firstDayDate) { this.firstDayDate = firstDayDate; }
     public void setWeekAmount(Integer weekAmount) { this.weekAmount = weekAmount; }
-    public void setFor_userID(String for_userID) { this.for_userID = for_userID; }
-
+//    public void setFor_userID(String for_userID) { this.for_userID = for_userID; }
+    public void setUser(User user) {
+        this.user = user;
+    }
+    public void setDefaultTable(boolean defaultTable) { this.defaultTable = defaultTable; }
 }
