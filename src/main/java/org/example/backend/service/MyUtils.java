@@ -2,8 +2,18 @@ package org.example.backend.service;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import org.example.backend.model.CourseTimeTable;
+import org.example.backend.model.DayRepeat;
+import org.example.backend.model.EventTime;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.Date;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.Calendar;
+import java.util.HashSet;
+import java.util.Set;
 
 public class MyUtils {
     //处理一些公共的问题，比如时间转换，cookie信息读取等等
@@ -51,5 +61,308 @@ public class MyUtils {
         else {
             return Date.valueOf(date);
         }
+    }
+
+    public static Integer[] DateToWeekandDay(Date firstDayDate,Date calculateDate){
+        //将日期转换成星期和日期
+        LocalDate firstDay = firstDayDate.toLocalDate();
+        LocalDate calculateDay = calculateDate.toLocalDate();
+        long dayDifference = ChronoUnit.DAYS.between(firstDay, calculateDay);
+        int weekNum = (int) (dayDifference / 7) + 1;
+        int startDay = firstDayDate.toLocalDate().getDayOfWeek().getValue();
+        int dayNum = calculateDate.toLocalDate().getDayOfWeek().getValue();
+        Integer[] weekAndDay = new Integer[2];
+        weekAndDay[0] = weekNum;
+        weekAndDay[1] = dayNum;
+        return weekAndDay;
+    }
+
+    public static Set<DayRepeat> eventTimestoDayRepeats(Set<EventTime> eventTimes){
+        //将eventTime转换成dayRepeat
+        Set<DayRepeat> dayRepeats = new HashSet<>();
+        for(EventTime et : eventTimes){
+            DayRepeat dayRepeat = new DayRepeat();
+            dayRepeat.setDate(et.getDate());
+            dayRepeat.setStartTime(et.getStartTime());
+            dayRepeat.setEndTime(et.getEndTime());
+            dayRepeat.setStartTimeNumber(et.getStartTimeNumber());
+            dayRepeat.setEndTimeNumber(et.getEndTimeNumber());
+            dayRepeats.add(dayRepeat);
+        }
+        return dayRepeats;
+    }
+
+    public static String[] getBothTimeByTwoNumber(Integer tableID,Integer startTimeNumber,Integer endTimeNumber,CourseTimeTableService courseTimeTableService){
+        //根据tableID和startTimeNumber找到对应的startTime
+        CourseTimeTable courseTimeTable = courseTimeTableService.findByEventTableID(tableID);
+        String[] bothTime = new String[2];
+        switch (startTimeNumber) {
+            case 1:
+                bothTime[0] = courseTimeTable.getTime1();
+                break;
+            case 2:
+                bothTime[0] = courseTimeTable.getTime3();
+                break;
+            case 3:
+                bothTime[0] = courseTimeTable.getTime5();
+                break;
+            case 4:
+                bothTime[0] = courseTimeTable.getTime7();
+                break;
+            case 5:
+                bothTime[0] = courseTimeTable.getTime9();
+                break;
+            case 6:
+                bothTime[0] = courseTimeTable.getTime11();
+                break;
+            case 7:
+                bothTime[0] = courseTimeTable.getTime13();
+                break;
+            case 8:
+                bothTime[0] = courseTimeTable.getTime15();
+                break;
+            case 9:
+                bothTime[0] = courseTimeTable.getTime17();
+                break;
+            case 10:
+                bothTime[0] = courseTimeTable.getTime19();
+                break;
+            case 11:
+                bothTime[0] = courseTimeTable.getTime21();
+                break;
+            case 12:
+                bothTime[0] = courseTimeTable.getTime23();
+                break;
+            case 13:
+                bothTime[0] = courseTimeTable.getTime25();
+                break;
+            case 14:
+                bothTime[0] = courseTimeTable.getTime27();
+                break;
+            case 15:
+                bothTime[0] = courseTimeTable.getTime29();
+                break;
+            case 16:
+                bothTime[0] = courseTimeTable.getTime31();
+                break;
+            case 17:
+                bothTime[0] = courseTimeTable.getTime33();
+                break;
+            case 18:
+                bothTime[0] = courseTimeTable.getTime35();
+                break;
+            case 19:
+                bothTime[0] = courseTimeTable.getTime37();
+                break;
+            case 20:
+                bothTime[0] = courseTimeTable.getTime39();
+                break;
+            default:
+                // 处理默认情况
+                break;
+        }
+        switch (endTimeNumber) {
+            case 1:
+                bothTime[1] = courseTimeTable.getTime2();
+                break;
+            case 2:
+                bothTime[1] = courseTimeTable.getTime4();
+                break;
+            case 3:
+                bothTime[1] = courseTimeTable.getTime6();
+                break;
+            case 4:
+                bothTime[1] = courseTimeTable.getTime8();
+                break;
+            case 5:
+                bothTime[1] = courseTimeTable.getTime10();
+                break;
+            case 6:
+                bothTime[1] = courseTimeTable.getTime12();
+                break;
+            case 7:
+                bothTime[1] = courseTimeTable.getTime14();
+                break;
+            case 8:
+                bothTime[1] = courseTimeTable.getTime16();
+                break;
+            case 9:
+                bothTime[1] = courseTimeTable.getTime18();
+                break;
+            case 10:
+                bothTime[1] = courseTimeTable.getTime20();
+                break;
+            case 11:
+                bothTime[1] = courseTimeTable.getTime22();
+                break;
+            case 12:
+                bothTime[1] = courseTimeTable.getTime24();
+                break;
+            case 13:
+                bothTime[1] = courseTimeTable.getTime26();
+                break;
+            case 14:
+                bothTime[1] = courseTimeTable.getTime28();
+                break;
+            case 15:
+                bothTime[1] = courseTimeTable.getTime30();
+                break;
+            case 16:
+                bothTime[1] = courseTimeTable.getTime32();
+                break;
+            case 17:
+                bothTime[1] = courseTimeTable.getTime34();
+                break;
+            case 18:
+                bothTime[1] = courseTimeTable.getTime36();
+                break;
+            case 19:
+                bothTime[1] = courseTimeTable.getTime38();
+                break;
+            case 20:
+                bothTime[1] = courseTimeTable.getTime40();
+                break;
+            default:
+                // 处理默认情况
+                break;
+        }
+        return bothTime;
+    }
+
+
+    public static String[] getBothTimeWithCourseTimeTable(Integer startTimeNumber,Integer endTimeNumber,CourseTimeTable courseTimeTable){
+        //根据tableID和startTimeNumber找到对应的startTime
+        String[] bothTime = new String[2];
+        switch (startTimeNumber) {
+            case 1:
+                bothTime[0] = courseTimeTable.getTime1();
+                break;
+            case 2:
+                bothTime[0] = courseTimeTable.getTime3();
+                break;
+            case 3:
+                bothTime[0] = courseTimeTable.getTime5();
+                break;
+            case 4:
+                bothTime[0] = courseTimeTable.getTime7();
+                break;
+            case 5:
+                bothTime[0] = courseTimeTable.getTime9();
+                break;
+            case 6:
+                bothTime[0] = courseTimeTable.getTime11();
+                break;
+            case 7:
+                bothTime[0] = courseTimeTable.getTime13();
+                break;
+            case 8:
+                bothTime[0] = courseTimeTable.getTime15();
+                break;
+            case 9:
+                bothTime[0] = courseTimeTable.getTime17();
+                break;
+            case 10:
+                bothTime[0] = courseTimeTable.getTime19();
+                break;
+            case 11:
+                bothTime[0] = courseTimeTable.getTime21();
+                break;
+            case 12:
+                bothTime[0] = courseTimeTable.getTime23();
+                break;
+            case 13:
+                bothTime[0] = courseTimeTable.getTime25();
+                break;
+            case 14:
+                bothTime[0] = courseTimeTable.getTime27();
+                break;
+            case 15:
+                bothTime[0] = courseTimeTable.getTime29();
+                break;
+            case 16:
+                bothTime[0] = courseTimeTable.getTime31();
+                break;
+            case 17:
+                bothTime[0] = courseTimeTable.getTime33();
+                break;
+            case 18:
+                bothTime[0] = courseTimeTable.getTime35();
+                break;
+            case 19:
+                bothTime[0] = courseTimeTable.getTime37();
+                break;
+            case 20:
+                bothTime[0] = courseTimeTable.getTime39();
+                break;
+            default:
+                // 处理默认情况
+                break;
+        }
+        switch (endTimeNumber) {
+            case 1:
+                bothTime[1] = courseTimeTable.getTime2();
+                break;
+            case 2:
+                bothTime[1] = courseTimeTable.getTime4();
+                break;
+            case 3:
+                bothTime[1] = courseTimeTable.getTime6();
+                break;
+            case 4:
+                bothTime[1] = courseTimeTable.getTime8();
+                break;
+            case 5:
+                bothTime[1] = courseTimeTable.getTime10();
+                break;
+            case 6:
+                bothTime[1] = courseTimeTable.getTime12();
+                break;
+            case 7:
+                bothTime[1] = courseTimeTable.getTime14();
+                break;
+            case 8:
+                bothTime[1] = courseTimeTable.getTime16();
+                break;
+            case 9:
+                bothTime[1] = courseTimeTable.getTime18();
+                break;
+            case 10:
+                bothTime[1] = courseTimeTable.getTime20();
+                break;
+            case 11:
+                bothTime[1] = courseTimeTable.getTime22();
+                break;
+            case 12:
+                bothTime[1] = courseTimeTable.getTime24();
+                break;
+            case 13:
+                bothTime[1] = courseTimeTable.getTime26();
+                break;
+            case 14:
+                bothTime[1] = courseTimeTable.getTime28();
+                break;
+            case 15:
+                bothTime[1] = courseTimeTable.getTime30();
+                break;
+            case 16:
+                bothTime[1] = courseTimeTable.getTime32();
+                break;
+            case 17:
+                bothTime[1] = courseTimeTable.getTime34();
+                break;
+            case 18:
+                bothTime[1] = courseTimeTable.getTime36();
+                break;
+            case 19:
+                bothTime[1] = courseTimeTable.getTime38();
+                break;
+            case 20:
+                bothTime[1] = courseTimeTable.getTime40();
+                break;
+            default:
+                // 处理默认情况
+                break;
+        }
+        return bothTime;
     }
 }

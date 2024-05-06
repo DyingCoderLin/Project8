@@ -3,6 +3,7 @@ package org.example.backend.model;
 import jakarta.persistence.*;
 
 import java.sql.Date;
+import java.util.Set;
 
 @Entity
 @Table(name = "eventtable")
@@ -39,6 +40,9 @@ public class EventTable {
     @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.DETACH)
     @JoinColumn(name = "for_userID")
     private User user;
+
+    @OneToMany(mappedBy = "eventTable", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Event> events;
 
     public EventTable() {
     }
@@ -86,5 +90,14 @@ public class EventTable {
     public void setDefaultTable(boolean defaultTable) { this.defaultTable = defaultTable; }
     public void detach(){
         this.user.getEventTables().remove(this);
+    }
+    public Set<Event> getEvents() { return events; }
+    public Event getEventByEventID(Integer eventID) {
+        for (Event event : events) {
+            if (event.getEventID().equals(eventID)) {
+                return event;
+            }
+        }
+        return null;
     }
 }

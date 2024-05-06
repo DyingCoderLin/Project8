@@ -1,13 +1,14 @@
 package org.example.backend.service;
 
-import org.example.backend.model.User;
+import org.example.backend.model.*;
 import org.example.backend.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.example.backend.repository.EventTableRepository;
-import org.example.backend.model.EventTable;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 @Service
@@ -16,11 +17,13 @@ public class EventTableService {
 
     private final EventTableRepository eventTableRepository;
     private final CourseTimeTableRepository courseTimeTableRepository;
+    private final EventService eventService;
 
     @Autowired
-    public EventTableService(EventTableRepository eventTableRepository, CourseTimeTableRepository courseTimeTableRepository) {
+    public EventTableService(EventTableRepository eventTableRepository, CourseTimeTableRepository courseTimeTableRepository,EventService eventService) {
         this.eventTableRepository = eventTableRepository;
         this.courseTimeTableRepository = courseTimeTableRepository;
+        this.eventService = eventService;
     }
 
     public void saveEventTable(EventTable eventTable) {
@@ -32,9 +35,8 @@ public class EventTableService {
         final Logger log = Logger.getLogger(EventTableService.class.getName());
         EventTable eventTable = eventTableRepository.getByTableID(tableID);
         eventTable.detach();
+        delete(eventTable);
         log.info("Deleting event table with tableID: " + tableID);
-        courseTimeTableRepository.deleteByEventTableID(tableID);
-        eventTableRepository.deleteByTableID(tableID);
     }
 
     public void delete(EventTable eventTable) {
@@ -42,6 +44,15 @@ public class EventTableService {
         //inventory要删，event也要删（event删除的时候要删除timeconnection和对应的eventtime），coursetimetable也要删
         courseTimeTableRepository.deleteByEventTableID(eventTable.getTableID());
         //TODO；inventory中所有event删除
+        List<Event> eventsToDelete = new ArrayList<>();
+        for (Event event : eventTable.getEvents()) {
+            eventsToDelete.add(event);
+        }
+        // 删除临时集合中的 EventTime
+        for (Event event : eventsToDelete) {
+            eventTable.getEvents().remove(event);
+            eventService.delete(event);
+        }
         eventTableRepository.delete(eventTable);
     }
 }

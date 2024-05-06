@@ -31,6 +31,9 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<EventTable> eventTables;
 
+    @OneToMany(mappedBy = "changeTableUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<ChangeTable> changeTables;
+
     public User(){
     }
 
@@ -60,6 +63,8 @@ public class User {
     public void setUserLocation(String userLocation) { this.userLocation = userLocation; }
     public void setAvatarURL(String AvatarURL) { this.AvatarURL = AvatarURL; }
     public void setEventTables(Set<EventTable> eventTables) { this.eventTables = eventTables; }
+    public void setChangeTables(Set<ChangeTable> changeTables) { this.changeTables = changeTables; }
+    public Set<ChangeTable> getChangeTables() { return changeTables; }
 
     public EventTable getEventTableByTableID(Integer tableID) {
         for (EventTable eventTable : eventTables) {

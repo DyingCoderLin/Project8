@@ -1,6 +1,7 @@
 package org.example.backend.model;
 
 import jakarta.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "event")
@@ -27,6 +28,13 @@ public class Event {
 
     @Column(name = "week")
     private String week;
+
+    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.DETACH)
+    @JoinColumn(name = "eventtableID")
+    private EventTable eventTable;
+
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<EventTime> eventTimes;
 
     public Event() {
     }
@@ -58,5 +66,9 @@ public class Event {
     public void setCourseCode(String courseCode) { this.courseCode = courseCode; }
     public void setIsImportant(boolean isImportant) { this.isImportant = isImportant; }
     public void setWeek(String week) { this.week = week; }
-
+    public void setEventTable(EventTable eventTable) { this.eventTable = eventTable; }
+    public EventTable getEventTable() { return eventTable; }
+    public Set<EventTime> getEventTimes() { return eventTimes; }
+    public void setEventTimes(Set<EventTime> eventTimes) { this.eventTimes = eventTimes; }
+    public void detach() { this.eventTable.getEvents().remove(this); }
 }

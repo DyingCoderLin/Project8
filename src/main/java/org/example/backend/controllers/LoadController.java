@@ -1,21 +1,27 @@
 package org.example.backend.controllers;
 
 import org.example.backend.service.*;
+import org.example.backend.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.relational.core.sql.In;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.sql.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @RestController
 //@CrossOrigin(origins = "http://localhost:3000",allowCredentials = "true")
 public class LoadController {
     /*
     TODO:
+        addChangeHoliday
         loadEventInfo 加载单件事件的详细信息到前端
         loadDayVision 加载某一天所有事件的信息到前端
         loadMonthVision 加载某一月所有事件的简要信息到前端
@@ -25,16 +31,167 @@ public class LoadController {
     @Autowired
     private EventService eventService;
 
+    @Autowired
+    private ChangeTableService changeTableService;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private EventTableService eventTableService;
+
+    @Autowired
+    private CourseTimeTableService courseTimeTableService;
+
+    @Autowired
+    private EventTimeService eventTimeService;
+
+    @PostMapping("/addChangeHoliday")
+    public void addChangeHoliday(@RequestHeader(value = "Cookie") String cookie,
+                                   @RequestBody Map<String, Object> requestBody) {
+        final Logger log = LoggerFactory.getLogger(LoadController.class);
+        log.info("receive addChangeHoliday");
+        String[] cookieInfo = MyUtils.getCookieInfo(cookie);
+        String userID = cookieInfo[0];
+        Integer tableID = Integer.parseInt(cookieInfo[1]);
+        //modified为需要被替换的天
+        Date modifiedDate = MyUtils.stringToDate((String) requestBody.get("modifiedDate"));
+        //replace为替换上来的天,如果为空则表示当天取消
+        Date replaceDate = MyUtils.stringToDate((String) requestBody.get("replaceDate"));
+        User user = userService.getUserByUserID(userID);
+        EventTable eventTable = user.getEventTableByTableID(tableID);
+        //获取学期开始的日期，以更好地进行计算
+        Date firstDayDate = eventTable.getFirstDayDate();
+        //我需要通过学期开始的第一天，结合日历，modifiedDate的值，来计算出这是这学期第几周的第几天
+        //注：这里认为重复调整直接覆盖，所以要找到对应的changeTable，如果没有则新建
+        Set<ChangeTable> changeTables = user.getChangeTables();
+        ChangeTable changeTable = null;
+        for(ChangeTable ct : changeTables){
+            //如果里面本来就有要被调整的，则直接覆盖
+            if(ct.getModifiedDate().equals(modifiedDate)){
+                ct.setReplaceDate(replaceDate);
+                changeTableService.saveChangeTable(ct);
+                changeTable = ct;
+                break;
+            }
+        }
+        //如果没有找到，则新建
+        if(changeTable == null) {
+            changeTable = new ChangeTable();
+            changeTable.setModifiedDate(modifiedDate);
+            changeTable.setReplaceDate(replaceDate);
+            changeTable.setUser(user);
+            changeTableService.saveChangeTable(changeTable);
+        }
+    }
+
     @PostMapping("/loadEventInfo")
-    public String loadEventInfo(String eventId) {
+    public ResponsetoloadEventInfo loadEventInfo(@RequestHeader(value = "Cookie") String cookie,
+                                                 @RequestBody Map<String, Object> requestBody) {
         final Logger log = LoggerFactory.getLogger(LoadController.class);
         log.info("receive loadEventInfo");
-        return "loadEventInfo";
+        String[] cookieInfo = MyUtils.getCookieInfo(cookie);
+        String userID = cookieInfo[0];
+        Integer tableID = Integer.parseInt(cookieInfo[1]);
+        Integer eventID = (Integer) requestBody.get("eventID");
+        User user = userService.getUserByUserID(userID);
+        EventTable eventTable = user.getEventTableByTableID(tableID);
+        Event event = eventTable.getEventByEventID(eventID);
+        Set<EventTime> eventTimes = event.getEventTimes();
+        Set<DayRepeat> dayRepeats = MyUtils.eventTimestoDayRepeats(eventTimes);
+        ResponsetoloadEventInfo response = new ResponsetoloadEventInfo();
+        response.setCode(1);
+        response.setEvent(event,dayRepeats);
+        return response;
     }
 
     @PostMapping("/loadDayVision")
-    public String loadDayVision(String date) {
-        return "loadDayVision";
+    public ResponsetoloadDayVision loadDayVision(@RequestHeader(value = "Cookie") String cookie,
+                                @RequestBody Map<String, Object> requestBody) {
+        final Logger log = LoggerFactory.getLogger(LoadController.class);
+        String[] cookieInfo = MyUtils.getCookieInfo(cookie);
+        String userID = cookieInfo[0];
+        Integer tableID = Integer.parseInt(cookieInfo[1]);
+        //获取的date为2024-2-14格式
+        Date date = MyUtils.stringToDate((String) requestBody.get("date"));
+        boolean isChanged = false;//标志是否调休
+        User user = userService.getUserByUserID(userID);
+        EventTable eventTable = user.getEventTableByTableID(tableID);
+        Set<Event> events = eventTable.getEvents();
+        //在读取前要先检验是否被调休
+        Set<ChangeTable> changeTables = user.getChangeTables();
+        Date replaceDate = null;
+        //如果被调休则替换日期,但要特殊处理直接放假的天，正常显示日程但不显示课程
+        if(!changeTables.isEmpty()) {
+            for(ChangeTable changeTable : changeTables) {
+                if (changeTable != null) {
+                    if (changeTable.getModifiedDate().equals(date)) {
+                        replaceDate = changeTable.getReplaceDate();
+                        isChanged = true;
+                    }
+                }
+            }
+        }
+        log.info("ReplaceDate:" + replaceDate);
+        //先获取这是第几周的第几天
+        if(!isChanged || (isChanged && replaceDate != null)) {
+            if(isChanged) {
+                date = replaceDate;
+            }
+            Integer[] weekandday = MyUtils.DateToWeekandDay(eventTable.getFirstDayDate(), date);
+            Integer week = weekandday[0];
+            Integer day = weekandday[1];
+            log.info("week:" + week + " day:" + day);
+            //先定义返回类型
+            ResponsetoloadDayVision response = new ResponsetoloadDayVision();
+            //获取这一天的所有事件
+
+            for (Event e : events) {
+                //先看当周是否空出
+                if (e.getWeek().charAt(week - 1) == '0') {
+                    continue;
+                }
+                //如果当周空出，则查看day是否匹配
+                else {
+                    Set<EventTime> eventTimes = e.getEventTimes();
+                    for (EventTime et : eventTimes) {
+                        if (et.getDate().equals(day)) {
+                            //将这个事件的信息传到前端
+                            response.setEventArr(e, et);
+                        }
+                    }
+                }
+            }
+            return response;
+        }
+        else {
+            log.info("这一天被调休");
+            Integer[] weekandday = MyUtils.DateToWeekandDay(eventTable.getFirstDayDate(), date);
+            Integer week = weekandday[0];
+            Integer day = weekandday[1];
+            log.info("week:" + week + " day:" + day);
+            //先定义返回类型
+            ResponsetoloadDayVision response = new ResponsetoloadDayVision();
+            //获取这一天的所有事件
+
+            for (Event e : events) {
+                //先看当周是否空出，且只显示日程
+                if (!e.getType() || e.getWeek().charAt(week - 1) == '0') {
+                    continue;
+                }
+                //如果当周空出，则查看day是否匹配
+                else {
+                    Set<EventTime> eventTimes = e.getEventTimes();
+                    for (EventTime et : eventTimes) {
+                        if (et.getDate().equals(day)) {
+                            //将这个事件的信息传到前端
+                            response.setEventArr(e, et);
+                        }
+                    }
+                }
+            }
+            return response;
+        }
     }
 
     @PostMapping("/loadMonthVision")

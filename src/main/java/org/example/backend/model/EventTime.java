@@ -26,6 +26,10 @@ public class EventTime {
     @Column(name = "endtimenumber")
     private Integer endTimeNumber;
 
+    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.DETACH)
+    @JoinColumn(name = "eventID")
+    private Event event;
+
     public EventTime() {
     }
 
@@ -52,5 +56,7 @@ public class EventTime {
     public void setEndTime(String endTime) { this.endTime = endTime; }
     public void setStartTimeNumber(Integer startTimeNumber) { this.startTimeNumber = startTimeNumber; }
     public void setEndTimeNumber(Integer endTimeNumber) { this.endTimeNumber = endTimeNumber; }
-
+    public void setEvent(Event event) { this.event = event; }
+    public void detach() { this.event.getEventTimes().remove(this); }
+    public Event getEvent() { return event; }
 }

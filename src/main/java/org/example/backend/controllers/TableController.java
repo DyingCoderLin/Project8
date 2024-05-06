@@ -14,8 +14,8 @@ public class TableController {
     /*
     处理所有工作表相关的请求
     TODO:
-        addTableInfo done
-        deleteTable done，但是后续需要加入对关联事件的删除
+        addTableInfo done，同时该table关联的所有课程的时间都要进行更新
+        deleteTable done
         switchTable done
         getAllTableInfo done
     */
@@ -28,6 +28,8 @@ public class TableController {
 
     @Autowired
     private CourseTimeTableService courseTimeTableService;
+    @Autowired
+    private EventService eventService;
 
     @PostMapping("/addTableInfo")
     public void addTableInfo(@RequestHeader(value="Cookie") String cookie,
@@ -99,7 +101,15 @@ public class TableController {
             courseTimeTable.setCourseNumber(courseNumber);
             eventTableService.saveEventTable(eventTable);
             courseTimeTableService.save(courseTimeTable);
+            //根据新的courseTime对于各个事件的时间进行更新
+            Set<Event> events = eventTable.getEvents();
+            for(Event event : events) {
+                if(!event.getType()){
+                    eventService.updateTime(event,courseTimeTable);
+                }
+            }
         }
+
     }
 
     @PostMapping("/deleteTable")

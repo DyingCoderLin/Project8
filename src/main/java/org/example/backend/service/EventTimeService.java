@@ -1,5 +1,6 @@
 package org.example.backend.service;
 
+import org.example.backend.model.EventTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.example.backend.repository.EventTimeRepository;
@@ -14,5 +15,14 @@ public class EventTimeService {
     @Autowired
     public EventTimeService(EventTimeRepository eventTimeRepository) {
         this.eventTimeRepository = eventTimeRepository;
+    }
+
+    public void save(EventTime eventTime) {
+        eventTimeRepository.save(eventTime);
+    }
+
+    public void delete(EventTime eventTime) {
+        eventTime.detach();
+        eventTimeRepository.delete(eventTime);
     }
 }
