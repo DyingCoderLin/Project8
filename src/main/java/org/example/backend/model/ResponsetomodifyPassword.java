@@ -1,23 +1,23 @@
 package org.example.backend.model;
 
-public class ResponsetoaddUsertoDatabase {
+public class ResponsetomodifyPassword {
     //返回code和data两个部分，最简单的返回方式
     private int code;
 
     public class Data {
-        private boolean isSuccess;
+        private int modifyStatus;
         public Data() {
         }
-        public boolean getIsSuccess() { return isSuccess; }
-        public void setIsSuccess(boolean value) { this.isSuccess = value; }
+        public int getmodifyStatus() { return modifyStatus; }
+        public void setmodifyStatus(int value) { this.modifyStatus = value; }
     }
 
     private Data data;
 
-    public ResponsetoaddUsertoDatabase() {
+    public ResponsetomodifyPassword() {
     }
 
-    public int getCode() {
+    public long getCode() {
         return code;
     }
 
@@ -29,8 +29,8 @@ public class ResponsetoaddUsertoDatabase {
         return data;
     }
 
-    public void setData(boolean isSuccess) {
+    public void setData(int modifyStatus) {
         this.data = new Data();
-        this.data.setIsSuccess(isSuccess);
+        this.data.setmodifyStatus(modifyStatus);
     }
 }

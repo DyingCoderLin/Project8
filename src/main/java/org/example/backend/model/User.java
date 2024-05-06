@@ -1,6 +1,8 @@
 package org.example.backend.model;
 
 import jakarta.persistence.*;
+import org.example.backend.service.EventTableService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Set;
 
@@ -29,7 +31,7 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<EventTable> eventTables;
 
-    public User() {
+    public User(){
     }
 
     public User(String userID,String userName, boolean userGender, String password, String userLocation, String AvatarURL) {
@@ -59,4 +61,12 @@ public class User {
     public void setAvatarURL(String AvatarURL) { this.AvatarURL = AvatarURL; }
     public void setEventTables(Set<EventTable> eventTables) { this.eventTables = eventTables; }
 
+    public EventTable getEventTableByTableID(Integer tableID) {
+        for (EventTable eventTable : eventTables) {
+            if (eventTable.getTableID().equals(tableID)) {
+                return eventTable;
+            }
+        }
+        return null;
+    }
 }

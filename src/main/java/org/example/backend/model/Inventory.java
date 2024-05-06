@@ -11,26 +11,26 @@ public class Inventory {
     private Integer inventory_id;
 
     @Column(name = "event_id")
-    private Integer event_id;
+    private Integer eventID;
 
     @Column(name = "table_id")
-    private Integer table_id;
+    private Integer tableID;
 
     public Inventory() {
     }
 
-    public Inventory(Integer event_id, Integer table_id) {
-        this.event_id = event_id;
-        this.table_id = table_id;
+    public Inventory(Integer eventID, Integer tableID) {
+        this.eventID = eventID;
+        this.tableID = tableID;
     }
 
     // getters
     public Integer getInventory_id() { return inventory_id; }
-    public Integer getEvent_id() { return event_id; }
-    public Integer getTable_id() { return table_id; }
+    public Integer getEventID() { return eventID; }
+    public Integer getTableID() { return tableID; }
 
     // setters
     public void setInventory_id(Integer inventory_id) { this.inventory_id = inventory_id; }
-    public void setEvent_id(Integer event_id) { this.event_id = event_id; }
-    public void setTable_id(Integer table_id) { this.table_id = table_id; }
+    public void setEventID(Integer eventID) { this.eventID = eventID; }
+    public void setTableID(Integer tableID) { this.tableID = tableID; }
 }

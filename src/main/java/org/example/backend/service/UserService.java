@@ -7,12 +7,14 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.example.backend.repository.UserRepository;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.Set;
 
 
 @Service
+@Transactional
 public class UserService {
 
     private final UserRepository userRepository;
@@ -26,13 +28,23 @@ public class UserService {
 
     public User isPasswardCorrect(String userID, String password) {
         User user = userRepository.findByUserID(userID);
-        return user;
-//        if(user!=null) {
-//            return user.getPassword().equals(password);
-//        }
-//        return false;
+        if(user!=null) {
+            if(user.getPassword().equals(password)) {
+                return user;
+            }
+        }
+        return null;
     }
 
+    public User getUserByUserID(String userID) {
+        return userRepository.findByUserID(userID);
+    }
+
+    public void updateUser(User user) {
+        userRepository.save(user);
+    }
+
+    //这个saveUser用来检查是否存在相同的userID，如果存在则返回false，否则存入数据并返回true
     public boolean saveUser(User user) {
         if(userRepository.findByUserID(user.getUserID())==null) {
             userRepository.save(user);
