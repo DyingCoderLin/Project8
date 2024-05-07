@@ -32,7 +32,7 @@ CREATE TABLE `eventtime` (
   `start_time` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`eventtime_id`),
   KEY `FKfbt049ghmjsv7cu80area2vgk` (`event_id`),
-  CONSTRAINT `FKfbt049ghmjsv7cu80area2vgk` FOREIGN KEY (`event_id`) REFERENCES `event` (`event_id`)
+  CONSTRAINT `FKfbt049ghmjsv7cu80area2vgk` FOREIGN KEY (`event_id`) REFERENCES `event` (`event_id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -55,4 +55,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-05-07 15:01:11
+-- Dump completed on 2024-05-07 22:01:43

@@ -35,7 +35,7 @@ CREATE TABLE `eventtable` (
   `table_name` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`tableid`),
   KEY `FK12tescg9heem34777exlt9kj6` (`for_userid`),
-  CONSTRAINT `FK12tescg9heem34777exlt9kj6` FOREIGN KEY (`for_userid`) REFERENCES `user` (`user_id`)
+  CONSTRAINT `FK12tescg9heem34777exlt9kj6` FOREIGN KEY (`for_userid`) REFERENCES `user` (`user_id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -58,4 +58,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-05-07 15:01:11
+-- Dump completed on 2024-05-07 22:01:43

@@ -33,7 +33,7 @@ CREATE TABLE `event` (
   `week` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`event_id`),
   KEY `FKn9qtocru5nui6pghig016qcsj` (`eventtable_id`),
-  CONSTRAINT `FKn9qtocru5nui6pghig016qcsj` FOREIGN KEY (`eventtable_id`) REFERENCES `eventtable` (`tableid`)
+  CONSTRAINT `FKn9qtocru5nui6pghig016qcsj` FOREIGN KEY (`eventtable_id`) REFERENCES `eventtable` (`tableid`) ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -56,4 +56,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-05-07 15:01:11
+-- Dump completed on 2024-05-07 22:01:43
