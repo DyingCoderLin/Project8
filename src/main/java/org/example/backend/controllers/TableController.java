@@ -162,39 +162,52 @@ public class TableController {
     }
 
     @PostMapping("/switchTable")
-    public ResponsetoswitchTable switchTable(@RequestBody Map<String,Object> requestBody) {
-        String userID = (String) requestBody.get("userID");
-        Integer tableID = (Integer)requestBody.get("tableID");
-        String cookie = null;
-        if(tableID == 0){//要为它生成新的EventTable对象并插入数据库，将返回的tableID和Cookie更新
-            EventTable eventTable = new EventTable();
-            eventTable.setUser(userService.getUserByUserID(userID));
-            eventTable.setTableName("新建工作表");
-            eventTableService.saveEventTable(eventTable);
-            tableID = eventTable.getTableID();
+    public ResponsetoswitchTable switchTable(@RequestHeader(value="Cookie") String cookie,
+                                             @RequestBody Map<String,Object> requestBody) {
+
+        String[] cookieInfo = MyUtils.getCookieInfo(cookie);
+        String userID = cookieInfo[0];
+        Integer oldTableID = Integer.parseInt(cookieInfo[1]);
+        //要切换过去的表
+        Integer newTableID = (Integer)requestBody.get("tableID");
+        User user = userService.getUserByUserID(userID);
+        EventTable oldEventTable = user.getEventTableByTableID(oldTableID);
+        oldEventTable.setDefaultTable(false);
+        eventTableService.saveEventTable(oldEventTable);
+        if(newTableID == 0){//要为它生成新的EventTable对象并插入数据库，将返回的tableID和Cookie更新
+            EventTable newEventTable = new EventTable();
+            newEventTable.setUser(user);
+            newEventTable.setTableName("新建工作表");
+            newEventTable.setDefaultTable(true);
+            eventTableService.saveEventTable(newEventTable);
+            newTableID = newEventTable.getTableID();
             CourseTimeTable courseTimeTable = new CourseTimeTable();
-            courseTimeTable.setEventTableID(tableID);
+            courseTimeTable.setEventTableID(newTableID);
             courseTimeTableService.save(courseTimeTable);
         }
         else {
             //根据userID和tableID找到对应的eventTable
-            Set<EventTable> eventTables = userService.getEventTablesByuserID(userID);
-            EventTable eventTable = null;
+            Set<EventTable> eventTables = user.getEventTables();
+            EventTable newEventTable = null;
             //找到userID,tableID对应的eventTable
             for (EventTable et : eventTables) {
-                if (Objects.equals(et.getTableID(), tableID)) {
-                    eventTable = et;
+                if (Objects.equals(et.getTableID(), newTableID)) {
+                    newEventTable = et;
                     break;
                 }
             }
-            if (eventTable == null) {
-                tableID = 0;
+            if (newEventTable == null) {
+                newTableID = 0;
+            }
+            else {
+                newEventTable.setDefaultTable(true);
+                eventTableService.saveEventTable(newEventTable);
             }
         }
-        cookie = MyUtils.setCookie(userID,tableID);
+        cookie = MyUtils.setCookie(userID,newTableID);
         ResponsetoswitchTable response = new ResponsetoswitchTable();
         response.setCode(1);
-        response.setData(cookie,tableID);
+        response.setData(cookie,newTableID);
         return response;
     }
 }

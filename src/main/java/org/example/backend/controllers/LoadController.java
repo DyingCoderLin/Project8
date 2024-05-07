@@ -129,32 +129,62 @@ public class LoadController {
                 }
             }
         }
+        ResponsetoloadDayVision response = new ResponsetoloadDayVision();
         log.info("ReplaceDate:" + replaceDate);
         //先获取这是第几周的第几天
         if(!isChanged || (isChanged && replaceDate != null)) {
             if(isChanged) {
-                date = replaceDate;
-            }
-            Integer[] weekandday = MyUtils.DateToWeekandDay(eventTable.getFirstDayDate(), date);
-            Integer week = weekandday[0];
-            Integer day = weekandday[1];
-            log.info("week:" + week + " day:" + day);
-            //先定义返回类型
-            ResponsetoloadDayVision response = new ResponsetoloadDayVision();
-            //获取这一天的所有事件
-
-            for (Event e : events) {
-                //先看当周是否空出
-                if (e.getWeek().charAt(week - 1) == '0') {
-                    continue;
+                //如果调休了，那么要显示date当天的日程和replaceDate当天的课程
+                Integer[] weekandday0 = MyUtils.DateToWeekandDay(eventTable.getFirstDayDate(), date);
+                Integer weekforDate = weekandday0[0];
+                Integer dayforDate = weekandday0[1];
+                Integer[] weekandday1 = MyUtils.DateToWeekandDay(eventTable.getFirstDayDate(), replaceDate);
+                Integer weekforReplaceDate = weekandday1[0];
+                Integer dayforReplaceDate = weekandday1[1];
+                //遍历所有事件
+                for (Event e : events) {
+                    //先看时间在两个时间点是否有，然后再看它的属性
+                    //weekforDate只看日程
+                    if (e.getType() && e.getWeek().charAt(weekforDate - 1) == '1') {
+                        Set<EventTime> eventTimes = e.getEventTimes();
+                        for (EventTime et : eventTimes) {
+                            if (et.getDate().equals(dayforDate)) {
+                                //将这个事件的信息传到前端
+                                response.setEventArr(e, et);
+                            }
+                        }
+                    }
+                    if (!e.getType() && e.getWeek().charAt(weekforReplaceDate - 1) == '1') {
+                        Set<EventTime> eventTimes = e.getEventTimes();
+                        for (EventTime et : eventTimes) {
+                            if (et.getDate().equals(dayforReplaceDate)) {
+                                //将这个事件的信息传到前端
+                                response.setEventArr(e, et);
+                            }
+                        }
+                    }
+                    //其他情况都不会认为是当天的事件
                 }
-                //如果当周空出，则查看day是否匹配
-                else {
-                    Set<EventTime> eventTimes = e.getEventTimes();
-                    for (EventTime et : eventTimes) {
-                        if (et.getDate().equals(day)) {
-                            //将这个事件的信息传到前端
-                            response.setEventArr(e, et);
+            }
+            else {
+                Integer[] weekandday = MyUtils.DateToWeekandDay(eventTable.getFirstDayDate(), date);
+                Integer week = weekandday[0];
+                Integer day = weekandday[1];
+                log.info("week:" + week + " day:" + day);
+                //获取这一天的所有事件
+                for (Event e : events) {
+                    //先看当周是否空出
+                    if (e.getWeek().charAt(week - 1) == '0') {
+                        continue;
+                    }
+                    //如果当周空出，则查看day是否匹配
+                    else {
+                        Set<EventTime> eventTimes = e.getEventTimes();
+                        for (EventTime et : eventTimes) {
+                            if (et.getDate().equals(day)) {
+                                //将这个事件的信息传到前端
+                                response.setEventArr(e, et);
+                            }
                         }
                     }
                 }
@@ -162,17 +192,14 @@ public class LoadController {
             return response;
         }
         else {
-            log.info("这一天被调休");
+            log.info("这一天被放假了，只有当天的日程");
             Integer[] weekandday = MyUtils.DateToWeekandDay(eventTable.getFirstDayDate(), date);
             Integer week = weekandday[0];
             Integer day = weekandday[1];
             log.info("week:" + week + " day:" + day);
-            //先定义返回类型
-            ResponsetoloadDayVision response = new ResponsetoloadDayVision();
             //获取这一天的所有事件
-
             for (Event e : events) {
-                //先看当周是否空出，且只显示日程
+                //只显示在当天的日程
                 if (!e.getType() || e.getWeek().charAt(week - 1) == '0') {
                     continue;
                 }

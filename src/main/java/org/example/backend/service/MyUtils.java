@@ -115,37 +115,78 @@ public class MyUtils {
                 }
             }
             //先获取这是第几周的第几天
-            if (!isChanged || (isChanged && replaceDate != null)) {
-                if (isChanged) {
-                    currentDate = replaceDate;
-                }
-                Integer[] weekandday = DateToWeekandDay(firstDayDate, currentDate);
-                Integer week = weekandday[0];
-                Integer day = weekandday[1];
-
-                for (Event e : events) {
-                    //先看当周是否空出
-                    if (e.getWeek().charAt(week - 1) == '0') {
-                        continue;
-                    }
-                    //如果当周空出，则查看day是否匹配
-                    else {
-                        Set<EventTime> eventTimes = e.getEventTimes();
-                        for (EventTime et : eventTimes) {
-                            if (et.getDate().equals(day)) {
-                                if (e.getType()) {
+            if(!isChanged || (isChanged && replaceDate != null)) {
+                if(isChanged) {
+                    //如果调休了，那么要显示date当天的日程和replaceDate当天的课程
+                    Integer[] weekandday0 = MyUtils.DateToWeekandDay(firstDayDate, currentDate);
+                    Integer weekforDate = weekandday0[0];
+                    Integer dayforDate = weekandday0[1];
+                    Integer[] weekandday1 = MyUtils.DateToWeekandDay(firstDayDate, replaceDate);
+                    Integer weekforReplaceDate = weekandday1[0];
+                    Integer dayforReplaceDate = weekandday1[1];
+                    //遍历所有事件
+                    for (Event e : events) {
+                        //先看时间在两个时间点是否有，然后再看它的属性
+                        //weekforDate只看日程
+                        if (e.getType() && e.getWeek().charAt(weekforDate - 1) == '1') {
+                            Set<EventTime> eventTimes = e.getEventTimes();
+                            for (EventTime et : eventTimes) {
+                                if (et.getDate().equals(dayforDate)) {
                                     isHaveSchedule = true;
-                                } else {
-                                    isHaveCourse = true;
+                                    if (e.getIsImportant()) {
+                                        isImportant = true;
+                                    }
+                                    break;
                                 }
-                                if (e.getIsImportant()) {
-                                    isImportant = true;
+                            }
+                        }
+                        if (!e.getType() && e.getWeek().charAt(weekforReplaceDate - 1) == '1') {
+                            Set<EventTime> eventTimes = e.getEventTimes();
+                            for (EventTime et : eventTimes) {
+                                if (et.getDate().equals(dayforReplaceDate)) {
+                                    //将这个事件的信息传到前端
+                                    isHaveCourse = true;
+                                    if (e.getIsImportant()) {
+                                        isImportant = true;
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                        //其他情况都不会认为是当天的事件
+                    }
+                }
+                else {
+                    Integer[] weekandday = MyUtils.DateToWeekandDay(firstDayDate, currentDate);
+                    Integer week = weekandday[0];
+                    Integer day = weekandday[1];
+                    //获取这一天的所有事件
+                    for (Event e : events) {
+                        //先看当周是否空出
+                        if (e.getWeek().charAt(week - 1) == '0') {
+                            continue;
+                        }
+                        //如果当周空出，则查看day是否匹配
+                        else {
+                            Set<EventTime> eventTimes = e.getEventTimes();
+                            for (EventTime et : eventTimes) {
+                                if (et.getDate().equals(day)) {
+                                    if(e.getType()){
+                                        isHaveSchedule = true;
+                                    }
+                                    else{
+                                        isHaveCourse = true;
+                                    }
+                                    if (e.getIsImportant()) {
+                                        isImportant = true;
+                                    }
                                 }
                             }
                         }
                     }
                 }
-            } else {
+            }
+            else {
                 Integer[] weekandday = MyUtils.DateToWeekandDay(firstDayDate, currentDate);
                 Integer week = weekandday[0];
                 Integer day = weekandday[1];
