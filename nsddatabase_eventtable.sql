@@ -35,8 +35,8 @@ CREATE TABLE `eventtable` (
   `table_name` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`tableid`),
   KEY `FK12tescg9heem34777exlt9kj6` (`for_userid`),
-  CONSTRAINT `FK12tescg9heem34777exlt9kj6` FOREIGN KEY (`for_userid`) REFERENCES `user` (`userid`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3;
+  CONSTRAINT `FK12tescg9heem34777exlt9kj6` FOREIGN KEY (`for_userid`) REFERENCES `user` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -45,7 +45,7 @@ CREATE TABLE `eventtable` (
 
 LOCK TABLES `eventtable` WRITE;
 /*!40000 ALTER TABLE `eventtable` DISABLE KEYS */;
-INSERT INTO `eventtable` VALUES (_binary '','2024-02-19',1,0,NULL,NULL,NULL,NULL,'lin040430','myFirstTable'),(_binary '\0',NULL,2,NULL,NULL,NULL,NULL,NULL,'lin040430','新建工作表'),(_binary '\0',NULL,3,NULL,NULL,NULL,NULL,NULL,'lin040430','新建工作表');
+INSERT INTO `eventtable` VALUES (_binary '\0','2024-02-19',1,0,NULL,NULL,NULL,NULL,'lin040430','myFirstTable'),(_binary '','2024-05-07',2,20,'#ffffff','#FFD700','#FF6347','微软雅黑','lin040430','新建工作表');
 /*!40000 ALTER TABLE `eventtable` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -58,4 +58,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-05-07  0:54:06
+-- Dump completed on 2024-05-07 15:01:11

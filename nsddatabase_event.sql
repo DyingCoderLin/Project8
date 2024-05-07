@@ -23,18 +23,18 @@ DROP TABLE IF EXISTS `event`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `event` (
-  `eventid` int NOT NULL AUTO_INCREMENT,
-  `eventtableid` int DEFAULT NULL,
+  `event_id` int NOT NULL AUTO_INCREMENT,
+  `eventtable_id` int DEFAULT NULL,
   `is_important` bit(1) DEFAULT NULL,
   `type` bit(1) DEFAULT NULL,
   `course_code` varchar(255) DEFAULT NULL,
   `event_location` varchar(255) DEFAULT NULL,
   `event_name` varchar(255) DEFAULT NULL,
   `week` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`eventid`),
-  KEY `FKij1r328h1y85wu21c669x5utu` (`eventtableid`),
-  CONSTRAINT `FKij1r328h1y85wu21c669x5utu` FOREIGN KEY (`eventtableid`) REFERENCES `eventtable` (`tableid`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3;
+  PRIMARY KEY (`event_id`),
+  KEY `FKn9qtocru5nui6pghig016qcsj` (`eventtable_id`),
+  CONSTRAINT `FKn9qtocru5nui6pghig016qcsj` FOREIGN KEY (`eventtable_id`) REFERENCES `eventtable` (`tableid`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -43,7 +43,7 @@ CREATE TABLE `event` (
 
 LOCK TABLES `event` WRITE;
 /*!40000 ALTER TABLE `event` DISABLE KEYS */;
-INSERT INTO `event` VALUES (2,1,_binary '\0',_binary '\0',NULL,'myHouse','myFirstEvent','10000000000000'),(3,1,_binary '\0',_binary '',NULL,'myHouse','myFirstEvent','10000000000000');
+INSERT INTO `event` VALUES (1,1,_binary '\0',_binary '\0',NULL,'myHome','mySecondEvent','10000000000000'),(2,1,_binary '\0',_binary '',NULL,'myHome','myFirstEvent','10000000000000');
 /*!40000 ALTER TABLE `event` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -56,4 +56,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-05-07  0:54:06
+-- Dump completed on 2024-05-07 15:01:11
