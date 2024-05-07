@@ -8,26 +8,27 @@ public class EventTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "eventtime_id")
     private Integer eventTimeID;
 
     @Column(name = "date")
     private Integer date;
 
-    @Column(name = "startTime")
+    @Column(name = "start_time")
     private String startTime;
 
-    @Column(name = "endTime")
+    @Column(name = "end_time")
     private String endTime;
 
     //课程节数，如果是日程则为0，方便进行计算
-    @Column(name = "starttimenumber")
+    @Column(name = "starttime_number")
     private Integer startTimeNumber;
 
-    @Column(name = "endtimenumber")
+    @Column(name = "endtime_number")
     private Integer endTimeNumber;
 
     @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.DETACH)
-    @JoinColumn(name = "eventID")
+    @JoinColumn(name = "event_id")
     private Event event;
 
     public EventTime() {

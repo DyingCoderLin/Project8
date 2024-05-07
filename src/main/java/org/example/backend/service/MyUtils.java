@@ -2,9 +2,8 @@ package org.example.backend.service;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
-import org.example.backend.model.CourseTimeTable;
-import org.example.backend.model.DayRepeat;
-import org.example.backend.model.EventTime;
+import org.example.backend.model.*;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.Date;
@@ -90,6 +89,94 @@ public class MyUtils {
             dayRepeats.add(dayRepeat);
         }
         return dayRepeats;
+    }
+
+    public static boolean[] getBooleans(Date currentDate, Date firstDayDate,Set<ChangeTable> changeTables, Set<Event> events){
+        //检查一天是否有日程、课程、重要事件、是否被调休
+        final Logger log = org.slf4j.LoggerFactory.getLogger(MyUtils.class);
+        boolean isHaveSchedule = false;
+        boolean isHaveCourse = false;
+        boolean isImportant = false;
+        boolean isChanged = false;
+        Date replaceDate = null;
+        log.info("currentDate:" + currentDate+" firstDayDate:"+firstDayDate);
+        //如果currentDate小于firstDayDate，则直接返回false
+        if(currentDate.compareTo(firstDayDate) >= 0) {
+            log.info("currentDate:" + currentDate+" firstDayDate:"+firstDayDate);
+            //如果被调休则替换日期,但要特殊处理直接放假的天，正常显示日程但不显示课程
+            if (!changeTables.isEmpty()) {
+                for (ChangeTable changeTable : changeTables) {
+                    if (changeTable != null) {
+                        if (changeTable.getModifiedDate().equals(currentDate)) {
+                            replaceDate = changeTable.getReplaceDate();
+                            isChanged = true;
+                        }
+                    }
+                }
+            }
+            //先获取这是第几周的第几天
+            if (!isChanged || (isChanged && replaceDate != null)) {
+                if (isChanged) {
+                    currentDate = replaceDate;
+                }
+                Integer[] weekandday = DateToWeekandDay(firstDayDate, currentDate);
+                Integer week = weekandday[0];
+                Integer day = weekandday[1];
+
+                for (Event e : events) {
+                    //先看当周是否空出
+                    if (e.getWeek().charAt(week - 1) == '0') {
+                        continue;
+                    }
+                    //如果当周空出，则查看day是否匹配
+                    else {
+                        Set<EventTime> eventTimes = e.getEventTimes();
+                        for (EventTime et : eventTimes) {
+                            if (et.getDate().equals(day)) {
+                                if (e.getType()) {
+                                    isHaveSchedule = true;
+                                } else {
+                                    isHaveCourse = true;
+                                }
+                                if (e.getIsImportant()) {
+                                    isImportant = true;
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+                Integer[] weekandday = MyUtils.DateToWeekandDay(firstDayDate, currentDate);
+                Integer week = weekandday[0];
+                Integer day = weekandday[1];
+
+                for (Event e : events) {
+                    //先看当周是否空出，且只显示日程
+                    if (!e.getType() || e.getWeek().charAt(week - 1) == '0') {
+                        continue;
+                    }
+                    //如果当周空出，则查看day是否匹配
+                    else {
+                        Set<EventTime> eventTimes = e.getEventTimes();
+                        for (EventTime et : eventTimes) {
+                            if (et.getDate().equals(day)) {
+                                //将这个事件的信息传到前端
+                                isHaveSchedule = true;
+                                if (e.getIsImportant()) {
+                                    isImportant = true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        boolean[] booleans = new boolean[4];
+        booleans[0] = isHaveSchedule;
+        booleans[1] = isHaveCourse;
+        booleans[2] = isImportant;
+        booleans[3] = isChanged;
+        return booleans;
     }
 
     public static String[] getBothTimeByTwoNumber(Integer tableID,Integer startTimeNumber,Integer endTimeNumber,CourseTimeTableService courseTimeTableService){

@@ -80,12 +80,14 @@ public class UserController {
     @PostMapping("/addUserToDatabase")
     public ResponsetoaddUsertoDatabase addUserToDatabase(@RequestBody Map<String,Object> userData) {
         //先搜索username在数据库中是否存在，如果存在则返回错误信息
+        final Logger log = Logger.getLogger(UserController.class.getName());
         String userID = (String) userData.get("userID");
         String password = (String) userData.get("password");
         User user = new User();
         user.setUserID(userID);
         user.setPassword(password);
         ResponsetoaddUsertoDatabase response = new ResponsetoaddUsertoDatabase();
+        log.info("to here 0");
         if(userService.saveUser(user)) {
             response.setData(true);
             response.setCode(1);

@@ -11,21 +11,22 @@ import java.util.Set;
 public class User {
 
     @Id
+    @Column(name = "user_id")
     private String userID;
 
-    @Column(name = "userName")
+    @Column(name = "user_name")
     private String userName;
 
-    @Column(name = "userGender")
+    @Column(name = "user_gender")
     private boolean userGender;
 
     @Column(name = "password")
     private String password;
 
-    @Column(name = "userLocation")
+    @Column(name = "user_location")
     private String userLocation;
 
-    @Column(name = "AvatarURL")
+    @Column(name = "avatar_url")
     private String AvatarURL;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -35,6 +36,9 @@ public class User {
     private Set<ChangeTable> changeTables;
 
     public User(){
+        this.userGender = true;
+        this.userLocation = "China";
+        this.userName = "新用户";
     }
 
     public User(String userID,String userName, boolean userGender, String password, String userLocation, String AvatarURL) {

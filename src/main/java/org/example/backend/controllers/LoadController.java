@@ -11,10 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.sql.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @RestController
 //@CrossOrigin(origins = "http://localhost:3000",allowCredentials = "true")
@@ -195,7 +192,51 @@ public class LoadController {
     }
 
     @PostMapping("/loadMonthVision")
-    public String loadMonthVision(String date) {
-        return "loadMonthVision";
+    public ResponsetoloadMonthVision loadMonthVision(@RequestHeader(value = "Cookie") String cookie,
+                                  @RequestBody Map<String, Object> requestBody) {
+        final Logger log = LoggerFactory.getLogger(LoadController.class);
+        boolean isHaveSchedule = false;
+        boolean isHaveCourse = false;
+        boolean isImportant = false;
+        boolean isChanged = false;
+        String[] cookieInfo = MyUtils.getCookieInfo(cookie);
+        String userID = cookieInfo[0];
+        Integer tableID = Integer.parseInt(cookieInfo[1]);
+        Integer month = (Integer) requestBody.get("month");
+        month -= 1;
+        User user = userService.getUserByUserID(userID);
+        EventTable eventTable = user.getEventTableByTableID(tableID);
+        Date firstDayDate = eventTable.getFirstDayDate();
+        Set<Event> events = eventTable.getEvents();
+        Set<ChangeTable> changeTables = user.getChangeTables();
+        // 将 Date 对象转换为 Calendar 对象
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(firstDayDate);
+        // 获取指定年份
+        int year = calendar.get(Calendar.YEAR);
+
+        // 设置 Calendar 对象的年份和月份
+        calendar.set(Calendar.YEAR, year);
+        calendar.set(Calendar.MONTH, month);
+
+        // 获取该月的第一天
+        int firstDay = calendar.getActualMinimum(Calendar.DAY_OF_MONTH);
+        calendar.set(Calendar.DAY_OF_MONTH, firstDay);
+        ResponsetoloadMonthVision response = new ResponsetoloadMonthVision();
+        // 遍历该月的每一天
+        while (calendar.get(Calendar.YEAR) == year && calendar.get(Calendar.MONTH) == month) {
+            // 获取当前日期
+            Date currentDate = new java.sql.Date(calendar.getTimeInMillis());
+            log.info("currentDate:" + currentDate);
+            boolean[] bools = MyUtils.getBooleans(currentDate,firstDayDate,changeTables,events);
+            isHaveSchedule = bools[0];
+            isHaveCourse = bools[1];
+            isImportant = bools[2];
+            isChanged = bools[3];
+            response.addDayInformation(isHaveSchedule,isHaveCourse,isImportant,isChanged);
+            calendar.add(Calendar.DAY_OF_MONTH, 1);
+        }
+        response.setCode(1);
+        return response;
     }
 }

@@ -1,9 +1,12 @@
 package org.example.backend.controllers;
 
+import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.example.backend.service.*;
 import org.example.backend.model.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -31,6 +34,7 @@ public class EventController {
     @PostMapping("/changeEventInfo")
     public void changeEventInfo(@RequestHeader(value = "Cookie") String cookie,
                                 @RequestBody Map<String, Object> requestBody) {
+        final Logger log = LoggerFactory.getLogger(EventController.class);
         String[] cookieInfo = MyUtils.getCookieInfo(cookie);
         String userID = cookieInfo[0];
         Integer tableID = Integer.parseInt(cookieInfo[1]);
@@ -59,10 +63,12 @@ public class EventController {
             event = new Event();
         }
         else {
+            log.info("eventID: " + eventID);
             //要找到对应的event，通过eventtable和event的外键进行寻找
             Set<Event> events = eventTable.getEvents();
             for (Event event0 : events) {
                 if(Objects.equals(event0.getEventID(), eventID)){
+                    log.info("event 0 ID: " + event0.getEventID());
                     event = event0;
                     break;
                 }
@@ -121,7 +127,9 @@ public class EventController {
                 eventTime.setStartTime(dayRepeat.getStartTime());
                 eventTime.setEndTime(dayRepeat.getEndTime());
                 eventTime.setEvent(event);
+                log.info("to here 3");
                 eventTimeService.save(eventTime);
+                log.info("to here 4");
             }
         }
     }

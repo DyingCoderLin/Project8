@@ -9,34 +9,41 @@ public class Event {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "event_id")
     private Integer eventID;
 
     @Column(name = "type")
     private boolean type;
 
-    @Column(name = "eventName")
+    @Column(name = "event_name")
     private String eventName;
 
-    @Column(name = "eventLocation")
+    @Column(name = "event_location")
     private String eventLocation;
 
-    @Column(name = "courseCode")
+    @Column(name = "course_code")
     private String courseCode;
 
-    @Column(name = "isImportant")
+    @Column(name = "is_important")
     private boolean isImportant;
 
     @Column(name = "week")
     private String week;
 
     @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.DETACH)
-    @JoinColumn(name = "eventtableID")
+    @JoinColumn(name = "eventtable_id")
     private EventTable eventTable;
 
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<EventTime> eventTimes;
 
     public Event() {
+        this.type = true;
+        this.eventName = "事件名";
+        this.eventLocation = "事件地点";
+        this.courseCode = "课程代码";
+        this.isImportant = false;
+        this.week = "00000000000000000000";
     }
 
     //不需要声明id，因为generationtype会自动生成id

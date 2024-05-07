@@ -11,9 +11,10 @@ public class EventTable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "tableid")
     private Integer tableID;
 
-    @Column(name = "tableName")
+    @Column(name = "table_name")
     private String tableName;
 
     @Column(name = "background")
@@ -22,29 +23,37 @@ public class EventTable {
     @Column(name = "font")
     private String font;
 
-    @Column(name = "courseColor")//课程快颜色
+    @Column(name = "course_color")//课程快颜色
     private String courseColor;
 
-    @Column(name = "eventColor")//日程块颜色
+    @Column(name = "event_color")//日程块颜色
     private String eventColor;
 
-    @Column(name = "firstDayDate")
+    @Column(name = "first_day_date")
     private Date firstDayDate;
 
-    @Column(name = "weekAmount")
+    @Column(name = "week_amount")
     private Integer weekAmount;
 
     @Column(name = "defaulttable")
     private boolean defaultTable;
 
     @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.DETACH)
-    @JoinColumn(name = "for_userID")
+    @JoinColumn(name = "for_userid")
     private User user;
 
     @OneToMany(mappedBy = "eventTable", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Event> events;
 
     public EventTable() {
+        this.tableName = "默认表";
+        this.background = "#ffffff";
+        this.font = "微软雅黑";
+        this.courseColor = "#FFD700";
+        this.eventColor = "#FF6347";
+        this.firstDayDate = new Date(System.currentTimeMillis());
+        this.weekAmount = 20;
+        this.defaultTable = true;
     }
 
     public EventTable(Integer tableID,String tableName, String background, String font, String courseColor, String eventColor, Date firstDayDate, Integer weekAmount,boolean defaultTable) {
