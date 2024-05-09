@@ -62,6 +62,15 @@ public class MyUtils {
         }
     }
 
+    public static String dateToString(Date date){
+        //将日期转换成字符串
+        if(date == null)
+            return null;
+        else {
+            return date.toString();
+        }
+    }
+
     public static Integer[] DateToWeekandDay(Date firstDayDate,Date calculateDate){
         //将日期转换成星期和日期
         LocalDate firstDay = firstDayDate.toLocalDate();

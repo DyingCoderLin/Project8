@@ -138,6 +138,7 @@ public class LoadController {
                 Integer[] weekandday0 = MyUtils.DateToWeekandDay(eventTable.getFirstDayDate(), date);
                 Integer weekforDate = weekandday0[0];
                 Integer dayforDate = weekandday0[1];
+                response.setWeeknow(weekforDate);
                 Integer[] weekandday1 = MyUtils.DateToWeekandDay(eventTable.getFirstDayDate(), replaceDate);
                 Integer weekforReplaceDate = weekandday1[0];
                 Integer dayforReplaceDate = weekandday1[1];
@@ -170,6 +171,7 @@ public class LoadController {
                 Integer[] weekandday = MyUtils.DateToWeekandDay(eventTable.getFirstDayDate(), date);
                 Integer week = weekandday[0];
                 Integer day = weekandday[1];
+                response.setWeeknow(week);
                 log.info("week:" + week + " day:" + day);
                 //获取这一天的所有事件
                 for (Event e : events) {
@@ -189,6 +191,7 @@ public class LoadController {
                     }
                 }
             }
+
             return response;
         }
         else {
@@ -196,6 +199,7 @@ public class LoadController {
             Integer[] weekandday = MyUtils.DateToWeekandDay(eventTable.getFirstDayDate(), date);
             Integer week = weekandday[0];
             Integer day = weekandday[1];
+            response.setWeeknow(week);
             log.info("week:" + week + " day:" + day);
             //获取这一天的所有事件
             for (Event e : events) {

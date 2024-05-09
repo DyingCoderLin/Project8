@@ -47,7 +47,7 @@ public class EventTable {
 
     public EventTable() {
         this.tableName = "默认表";
-        this.background = "#ffffff";
+        this.background = "background.jpg";
         this.font = "微软雅黑";
         this.courseColor = "#FFD700";
         this.eventColor = "#FF6347";

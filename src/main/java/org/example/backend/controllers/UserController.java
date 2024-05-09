@@ -43,16 +43,17 @@ public class UserController {
         ResponsetoisPasswordCorrect response = new ResponsetoisPasswordCorrect();
         response.setCode(1);
         User user = userService.isPasswardCorrect(userID, password);
+        EventTable defaulteventTable = null;
 //        log.info("to here");
         if(user!=null){//如果正确
             Set<EventTable> eventTables = userService.getEventTablesByuserID(userID);
             if(eventTables.isEmpty()) {//如果user下面一张表都没有
 //                log.info("no table");
-                EventTable eventTable = new EventTable();
-                eventTable.setUser(user);
-                eventTable.setDefaultTable(true);
-                eventTableService.saveEventTable(eventTable);
-                tableID = eventTable.getTableID();
+                defaulteventTable = new EventTable();
+                defaulteventTable.setUser(user);
+                defaulteventTable.setDefaultTable(true);
+                eventTableService.saveEventTable(defaulteventTable);
+                tableID = defaulteventTable.getTableID();
                 //courseTimeTable和eventTable一一对应，所以eventtable的创建、删除要与courseTimeTable绑定
                 CourseTimeTable courseTimeTable = new CourseTimeTable();
                 courseTimeTable.setEventTableID(tableID);
@@ -63,15 +64,16 @@ public class UserController {
                 for(EventTable eventTable : eventTables) {
                     if(eventTable.getDefaultTable()) {
                         tableID = eventTable.getTableID();
+                        defaulteventTable = eventTable;
                         break;
                     }
                 }
             }
             String cookieValue = "userID="+ userID + ";tableID=" + tableID; // 将 userID 和 tableID 拼接成一个字符串
-            response.setData(true, tableID,cookieValue);//TODO:找到用户上次关闭时访问的表格（新用户就新建一张），并且返回这个table的ID
+            response.setData(true, tableID,cookieValue,defaulteventTable.getTableName(),defaulteventTable.getBackground(),defaulteventTable.getFont(),defaulteventTable.getCourseColor(),defaulteventTable.getEventColor(),MyUtils.dateToString(defaulteventTable.getFirstDayDate()),defaulteventTable.getWeekAmount());
         }
         else {
-            response.setData(false, 0,null);
+            response.setFailureData(false, 0,null);
         }
         return response;
 //        return "passwordCorrect";

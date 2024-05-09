@@ -5,6 +5,7 @@ import java.util.Set;
 
 public class ResponsetoloadDayVision {
     private int code;
+    private int weeknow;
     public class EventArr{
         private int eventID;
         private String eventName;
@@ -58,4 +59,6 @@ public class ResponsetoloadDayVision {
         eventArr.setEndTime(eventTime.getEndTime());
         eventArrs.add(eventArr);
     }
+    public void setWeeknow(int weeknow) { this.weeknow = weeknow; }
+    public int getWeeknow() { return weeknow; }
 }
