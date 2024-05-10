@@ -45,6 +45,7 @@ public class EventController {
         String eventLocation = (String) requestBody.get("eventLocation");
         String courseCode = (String) requestBody.get("courseCode");
         String weekRepeat = (String) requestBody.get("weekRepeat");
+        Boolean isImportant = (Boolean) requestBody.get("isImportant");
         List<Map<String, Object>> dayRepeatList = (List<Map<String, Object>>) requestBody.get("dayRepeat");
         User user = userService.getUserByUserID(userID);
         //根据userID，tableID先达到对应的eventTable
@@ -79,6 +80,7 @@ public class EventController {
         event.setEventLocation(eventLocation);
         event.setCourseCode(courseCode);
         event.setWeek(weekRepeat);
+        event.setIsImportant(isImportant);
         event.setEventTable(eventTable);
         eventService.saveEvent(event);
         if(!type){
