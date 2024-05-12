@@ -58,6 +58,7 @@ public class MyUtils {
         if(date == null)
             return null;
         else {
+            date = date.replace("/", "-");
             return Date.valueOf(date);
         }
     }
@@ -67,7 +68,7 @@ public class MyUtils {
         if(date == null)
             return null;
         else {
-            return date.toString();
+            return date.toString().replace("-","/");
         }
     }
 

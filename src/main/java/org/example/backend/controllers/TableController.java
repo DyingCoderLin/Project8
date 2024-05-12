@@ -162,7 +162,7 @@ public class TableController {
     }
 
     @PostMapping("/switchTable")
-    public ResponsetoswitchTable switchTable(@RequestHeader(value="Cookie") String cookie,
+    public ResponsetoisPasswordCorrect switchTable(@RequestHeader(value="Cookie") String cookie,
                                              @RequestBody Map<String,Object> requestBody) {
 
         String[] cookieInfo = MyUtils.getCookieInfo(cookie);
@@ -170,15 +170,18 @@ public class TableController {
         Integer oldTableID = Integer.parseInt(cookieInfo[1]);
         //要切换过去的表
         Integer newTableID = (Integer)requestBody.get("tableID");
+        String tableName = (String)requestBody.get("tableName");
         User user = userService.getUserByUserID(userID);
         EventTable oldEventTable = user.getEventTableByTableID(oldTableID);
         oldEventTable.setDefaultTable(false);
         eventTableService.saveEventTable(oldEventTable);
+        EventTable newEventTable;
         if(newTableID == 0){//要为它生成新的EventTable对象并插入数据库，将返回的tableID和Cookie更新
-            EventTable newEventTable = new EventTable();
+            newEventTable = new EventTable();
             newEventTable.setUser(user);
             newEventTable.setTableName("新建工作表");
             newEventTable.setDefaultTable(true);
+            newEventTable.setTableName(tableName);
             eventTableService.saveEventTable(newEventTable);
             newTableID = newEventTable.getTableID();
             CourseTimeTable courseTimeTable = new CourseTimeTable();
@@ -188,7 +191,7 @@ public class TableController {
         else {
             //根据userID和tableID找到对应的eventTable
             Set<EventTable> eventTables = user.getEventTables();
-            EventTable newEventTable = null;
+            newEventTable = null;
             //找到userID,tableID对应的eventTable
             for (EventTable et : eventTables) {
                 if (Objects.equals(et.getTableID(), newTableID)) {
@@ -205,9 +208,9 @@ public class TableController {
             }
         }
         cookie = MyUtils.setCookie(userID,newTableID);
-        ResponsetoswitchTable response = new ResponsetoswitchTable();
+        ResponsetoisPasswordCorrect response = new ResponsetoisPasswordCorrect();
         response.setCode(1);
-        response.setData(cookie,newTableID);
+        response.setData(true, newTableID,cookie,newEventTable.getTableName(),newEventTable.getBackground(),newEventTable.getFont(),newEventTable.getCourseColor(),newEventTable.getEventColor(),MyUtils.dateToString(newEventTable.getFirstDayDate()),newEventTable.getWeekAmount(),courseTimeTableService.findByEventTableID(newTableID));
         return response;
     }
 }

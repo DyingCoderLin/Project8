@@ -70,7 +70,7 @@ public class UserController {
                 }
             }
             String cookieValue = "userID="+ userID + ";tableID=" + tableID; // 将 userID 和 tableID 拼接成一个字符串
-            response.setData(true, tableID,cookieValue,defaulteventTable.getTableName(),defaulteventTable.getBackground(),defaulteventTable.getFont(),defaulteventTable.getCourseColor(),defaulteventTable.getEventColor(),MyUtils.dateToString(defaulteventTable.getFirstDayDate()),defaulteventTable.getWeekAmount());
+            response.setData(true, tableID,cookieValue,defaulteventTable.getTableName(),defaulteventTable.getBackground(),defaulteventTable.getFont(),defaulteventTable.getCourseColor(),defaulteventTable.getEventColor(),MyUtils.dateToString(defaulteventTable.getFirstDayDate()),defaulteventTable.getWeekAmount(),courseTimeTableService.findByEventTableID(tableID));
         }
         else {
             response.setFailureData(false, 0,null);
@@ -131,11 +131,8 @@ public class UserController {
     }
 
     @PostMapping("/modifyPassword")
-    public ResponsetomodifyPassword modifyPassword(@RequestHeader(value="Cookie") String cookie,
-                               @RequestBody Map<String,Object> requestBody) {
-        String userID = null;
-        String[] cookieInfo = MyUtils.getCookieInfo(cookie);
-        userID = cookieInfo[0];
+    public ResponsetomodifyPassword modifyPassword(@RequestBody Map<String,Object> requestBody) {
+        String userID = (String) requestBody.get("userID");
         String oldPassword = (String) requestBody.get("oldPassword");
         String newPassword = (String) requestBody.get("newPassword");
         User user = userService.isPasswardCorrect(userID, oldPassword);

@@ -71,6 +71,9 @@ public class EventController {
                 if(Objects.equals(event0.getEventID(), eventID)){
                     log.info("event 0 ID: " + event0.getEventID());
                     event = event0;
+                    for(EventTime eventTime : event.getEventTimes()){
+                        eventTimeService.delete(eventTime);
+                    }
                     break;
                 }
             }
