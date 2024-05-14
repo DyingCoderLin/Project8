@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.example.backend.model.*;
 import org.example.backend.service.EventTableService;
 import org.example.backend.service.*;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -131,8 +132,10 @@ public class UserController {
     }
 
     @PostMapping("/modifyPassword")
-    public ResponsetomodifyPassword modifyPassword(@RequestBody Map<String,Object> requestBody) {
-        String userID = (String) requestBody.get("userID");
+    public ResponsetomodifyPassword modifyPassword(@RequestHeader(value="Cookie") String cookie,
+                                                   @RequestBody Map<String,Object> requestBody) {
+        String[] cookieInfo = MyUtils.getCookieInfo(cookie);
+        String userID = cookieInfo[0];
         String oldPassword = (String) requestBody.get("oldPassword");
         String newPassword = (String) requestBody.get("newPassword");
         User user = userService.isPasswardCorrect(userID, oldPassword);
