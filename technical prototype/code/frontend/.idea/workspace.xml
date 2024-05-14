@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="NONE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="f03f8813-8c18-47c8-b5bc-04403956ce8d" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/App.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/component/ClassRepeatSelectionModal.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/component/ClassRepeatSelectionModal.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/component/ColorPickerModal.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/component/ColorPickerModal.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/component/EventEdit.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/component/EventEdit.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/component/EventRepeatSelectionModal.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/component/EventRepeatSelectionModal.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/component/MenuModal.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/component/MenuModal.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/component/TableSelectionModal.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/component/TableSelectionModal.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/screens/AddScreen.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/AddScreen.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/screens/AddTableScreen.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/AddTableScreen.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/screens/ChangeSecretScreen.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/ChangeSecretScreen.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/screens/DayCalendarScreen.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/DayCalendarScreen.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/screens/DetailScreen.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/DetailScreen.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/screens/ExchangeScreen.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/ExchangeScreen.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/screens/ForgetSecretScreen.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/ForgetSecretScreen.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/screens/LoginScreen.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/LoginScreen.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/screens/MonthCalendarScreen.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/MonthCalendarScreen.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/screens/ProfileScreen.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/ProfileScreen.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/screens/RegisterScreen.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/RegisterScreen.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/screens/SettingScreen.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/SettingScreen.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/screens/TimeSettingScreen.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/TimeSettingScreen.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/screens/WeekCalendarScreen.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/WeekCalendarScreen.jsx" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JSX File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 4
+}</component>
+  <component name="ProjectId" id="2g1jvssIGdqTR0KHj9tmcpIv215" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Node.js.LoginScreen.jsx.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "com.google.services.firebase.aqiPopupShown": "true",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "F:/Codefield/ANDROID/NSD3/nsd-app",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "yarn",
+    "settings.editor.selected.configurable": "configurable.group.appearance",
+    "ts.external.directory.path": "F:\\Codefield\\ANDROID\\NSD3\\nsd-app\\node_modules\\typescript\\lib",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="f03f8813-8c18-47c8-b5bc-04403956ce8d" name="Changes" comment="" />
+      <created>1714872211835</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1714872211835</updated>
+      <workItem from="1715041786246" duration="10200000" />
+      <workItem from="1715061365983" duration="4538000" />
+      <workItem from="1715067765652" duration="172000" />
+      <workItem from="1715092451387" duration="4297000" />
+      <workItem from="1715129163425" duration="4153000" />
+      <workItem from="1715133848317" duration="7916000" />
+      <workItem from="1715149388237" duration="4689000" />
+      <workItem from="1715166320227" duration="11781000" />
+      <workItem from="1715180444441" duration="2630000" />
+      <workItem from="1715220150311" duration="745000" />
+      <workItem from="1715221012104" duration="232000" />
+      <workItem from="1715222873959" duration="3373000" />
+      <workItem from="1715228556209" duration="1507000" />
+      <workItem from="1715240552437" duration="8718000" />
+      <workItem from="1715255112099" duration="9868000" />
+      <workItem from="1715266250418" duration="4211000" />
+      <workItem from="1715310006332" duration="2703000" />
+      <workItem from="1715315526480" duration="10779000" />
+      <workItem from="1715331716120" duration="5137000" />
+      <workItem from="1715346106278" duration="5136000" />
+      <workItem from="1715352615965" duration="5980000" />
+      <workItem from="1715392283335" duration="9298000" />
+      <workItem from="1715410298275" duration="3692000" />
+      <workItem from="1715426709204" duration="6291000" />
+      <workItem from="1715482697632" duration="1768000" />
+      <workItem from="1715488022654" duration="7866000" />
+      <workItem from="1715499524094" duration="20450000" />
+      <workItem from="1715524934031" duration="6095000" />
+      <workItem from="1715584952663" duration="12000" />
+      <workItem from="1715600574674" duration="476000" />
+      <workItem from="1715690840810" duration="149000" />
+      <workItem from="1715692176394" duration="3112000" />
+      <workItem from="1715696073074" duration="571000" />
+      <workItem from="1715697659720" duration="4042000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>
