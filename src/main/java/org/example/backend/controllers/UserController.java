@@ -57,7 +57,7 @@ public class UserController {
                 tableID = defaulteventTable.getTableID();
                 //courseTimeTable和eventTable一一对应，所以eventtable的创建、删除要与courseTimeTable绑定
                 CourseTimeTable courseTimeTable = new CourseTimeTable();
-                courseTimeTable.setEventTableID(tableID);
+                courseTimeTable.setEventTable(defaulteventTable);
                 courseTimeTableService.save(courseTimeTable);
             }
             else {
@@ -70,8 +70,13 @@ public class UserController {
                     }
                 }
             }
+
             String cookieValue = "userID="+ userID + ";tableID=" + tableID; // 将 userID 和 tableID 拼接成一个字符串
-            response.setData(true, tableID,cookieValue,defaulteventTable.getTableName(),defaulteventTable.getBackground(),defaulteventTable.getFont(),defaulteventTable.getCourseColor(),defaulteventTable.getEventColor(),MyUtils.dateToString(defaulteventTable.getFirstDayDate()),defaulteventTable.getWeekAmount(),courseTimeTableService.findByEventTableID(tableID));
+            response.setData(true, user.getIsFirstLogin(),tableID,cookieValue,defaulteventTable.getTableName(),defaulteventTable.getBackground(),defaulteventTable.getFont(),defaulteventTable.getCourseColor(),defaulteventTable.getEventColor(),MyUtils.dateToString(defaulteventTable.getFirstDayDate()),defaulteventTable.getWeekAmount(),defaulteventTable.getCourseTimeTable());
+            if(user.getIsFirstLogin()){
+                user.setIsFirstLogin(false);
+                userService.saveUser(user);
+            }
         }
         else {
             response.setFailureData(false, 0,null);
@@ -80,12 +85,13 @@ public class UserController {
 //        return "passwordCorrect";
     }
 
-    @PostMapping("/addUserToDatabase")
+    @PostMapping("/addUsertoDatabase")
     public ResponsetoaddUsertoDatabase addUserToDatabase(@RequestBody Map<String,Object> userData) {
         //先搜索username在数据库中是否存在，如果存在则返回错误信息
         final Logger log = Logger.getLogger(UserController.class.getName());
         String userID = (String) userData.get("userID");
         String password = (String) userData.get("password");
+
         User user = new User();
         user.setUserID(userID);
         user.setPassword(password);
@@ -98,10 +104,9 @@ public class UserController {
             eventTable.setUser(user);
             eventTable.setDefaultTable(true);
             eventTableService.saveEventTable(eventTable);
-            int tableID = eventTable.getTableID();
             //courseTimeTable和eventTable一一对应，所以eventtable的创建、删除要与courseTimeTable绑定
             CourseTimeTable courseTimeTable = new CourseTimeTable();
-            courseTimeTable.setEventTableID(tableID);
+            courseTimeTable.setEventTable(eventTable);
             courseTimeTableService.save(courseTimeTable);
         }
         else {

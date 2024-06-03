@@ -27,7 +27,6 @@ public class ResponsetoswitchTable {
 
             CourseTimeItem(){
             }
-
         }
 
         private String Cookie;

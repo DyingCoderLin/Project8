@@ -27,6 +27,7 @@ public class ResponsetoisPasswordCorrect {
 
         private String cookie;
         private boolean isLogin;//1为密码正确，0为密码或用户名错误
+        private boolean isFirstLogin;//1为第一次登录，0为非第一次登录
         private int tableID;
         private String tableName;
         private String background;
@@ -42,6 +43,7 @@ public class ResponsetoisPasswordCorrect {
         // getters
         public String getCookie() { return cookie; }
         public boolean getIsLogin() { return isLogin; }
+        public boolean getIsFirstLogin() { return isFirstLogin; }
         public int getTableID() { return tableID; }
         public String getTableName() { return tableName; }
         public String getBackground() { return background; }
@@ -56,6 +58,7 @@ public class ResponsetoisPasswordCorrect {
         // setters
         public void setCookie(String cookie) { this.cookie = cookie; }
         public void setIsLogin(boolean isLogin) { this.isLogin = isLogin; }
+        public void setIsFirstLogin(boolean isFirstLogin) { this.isFirstLogin = isFirstLogin; }
         public void setTableID(int tableID) { this.tableID = tableID; }
         public void setTableName(String tableName) { this.tableName = tableName; }
         public void setBackground(String background) { this.background = background; }
@@ -100,9 +103,10 @@ public class ResponsetoisPasswordCorrect {
         return data;
     }
 
-    public void setData(boolean isLogin, int tableID,String cookie,String tableName,String background, String font,String courseColor,String eventColor,String firstDayDate, Integer weekAmount,CourseTimeTable courseTimeTable) {
+    public void setData(boolean isLogin,boolean isFirstLogin, int tableID,String cookie,String tableName,String background, String font,String courseColor,String eventColor,String firstDayDate, Integer weekAmount,CourseTimeTable courseTimeTable) {
         this.data = new Data();
         this.data.setIsLogin(isLogin);
+        this.data.setIsFirstLogin(isFirstLogin);
         this.data.setTableID(tableID);
         this.data.setCookie(cookie);
         this.data.setTableName(tableName);

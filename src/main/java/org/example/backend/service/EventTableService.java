@@ -34,25 +34,24 @@ public class EventTableService {
         //删除一个table的时候，要连带着把这个table对应的coursetimetable，event，inventory等等全部删除
         final Logger log = Logger.getLogger(EventTableService.class.getName());
         EventTable eventTable = eventTableRepository.getByTableID(tableID);
-        eventTable.detach();
+//        eventTable.detach();
         delete(eventTable);
         log.info("Deleting event table with tableID: " + tableID);
     }
 
     public void delete(EventTable eventTable) {
-        eventTable.detach();
+//        eventTable.detach();
         //inventory要删，event也要删（event删除的时候要删除timeconnection和对应的eventtime），coursetimetable也要删
-        courseTimeTableRepository.deleteByEventTableID(eventTable.getTableID());
         //TODO；inventory中所有event删除
-        List<Event> eventsToDelete = new ArrayList<>();
-        for (Event event : eventTable.getEvents()) {
-            eventsToDelete.add(event);
-        }
-        // 删除临时集合中的 EventTime
-        for (Event event : eventsToDelete) {
-            eventTable.getEvents().remove(event);
-            eventService.delete(event);
-        }
+//        List<Event> eventsToDelete = new ArrayList<>();
+//        for (Event event : eventTable.getEvents()) {
+//            eventsToDelete.add(event);
+//        }
+//        // 删除临时集合中的 EventTime
+//        for (Event event : eventsToDelete) {
+//            eventTable.getEvents().remove(event);
+//            eventService.delete(event);
+//        }
         eventTableRepository.delete(eventTable);
     }
 }

@@ -38,19 +38,22 @@ public class EventTable {
     @Column(name = "defaulttable")
     private boolean defaultTable;
 
-    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.DETACH)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "for_userid")
     private User user;
 
-    @OneToMany(mappedBy = "eventTable", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "eventTable", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private Set<Event> events;
+
+    @OneToOne(mappedBy = "eventTable", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+    private CourseTimeTable courseTimeTable;
 
     public EventTable() {
         this.tableName = "默认表";
         this.background = "background.jpg";
         this.font = "微软雅黑";
-        this.courseColor = "#FFD700";
-        this.eventColor = "#FF6347";
+        this.courseColor = "#002fa7";
+        this.eventColor = "#f16326";
         this.firstDayDate = new Date(System.currentTimeMillis());
         this.weekAmount = 20;
         this.defaultTable = true;
@@ -82,6 +85,7 @@ public class EventTable {
 //    public String getFor_userID() { return user.getUserID(); }
     public User getUser() { return user; }
     public boolean getDefaultTable() { return defaultTable; }
+    public CourseTimeTable getCourseTimeTable() { return courseTimeTable; }
 
     // setters
     public void setTableID(Integer tableID) { this.tableID = tableID; }
@@ -91,15 +95,17 @@ public class EventTable {
     public void setCourseColor(String courseColor) { this.courseColor = courseColor; }
     public void setEventColor(String eventColor) { this.eventColor = eventColor; }
     public void setFirstDayDate(Date firstDayDate) { this.firstDayDate = firstDayDate; }
+    public void setEvents(Set<Event> events) { this.events = events; }
     public void setWeekAmount(Integer weekAmount) { this.weekAmount = weekAmount; }
 //    public void setFor_userID(String for_userID) { this.for_userID = for_userID; }
     public void setUser(User user) {
         this.user = user;
     }
     public void setDefaultTable(boolean defaultTable) { this.defaultTable = defaultTable; }
-    public void detach(){
-        this.user.getEventTables().remove(this);
-    }
+    public void setCourseTimeTable(CourseTimeTable courseTimeTable) { this.courseTimeTable = courseTimeTable; }
+//    public void detach(){
+//        this.user.getEventTables().remove(this);
+//    }
     public Set<Event> getEvents() { return events; }
     public Event getEventByEventID(Integer eventID) {
         for (Event event : events) {

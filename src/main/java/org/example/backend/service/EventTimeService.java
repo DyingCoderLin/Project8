@@ -22,7 +22,10 @@ public class EventTimeService {
     }
 
     public void delete(EventTime eventTime) {
-        eventTime.detach();
+        if(eventTime == null){
+            return;
+        }
+//        eventTime.detach();
         eventTimeRepository.delete(eventTime);
     }
 }

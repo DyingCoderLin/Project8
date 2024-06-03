@@ -27,7 +27,7 @@ public class EventTime {
     @Column(name = "endtime_number")
     private Integer endTimeNumber;
 
-    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.DETACH)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "event_id")
     private Event event;
 

@@ -26,7 +26,7 @@ public class ChangeTable {
     @Column(name = "targetDate")
     private Date replaceDate;
 
-    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.DETACH)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userid")
     private User changeTableUser;
 

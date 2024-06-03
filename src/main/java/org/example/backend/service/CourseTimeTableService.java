@@ -16,15 +16,7 @@ public class CourseTimeTableService {
         this.courseTimeTableRepository = courseTimeTableRepository;
     }
 
-    public CourseTimeTable findByEventTableID(Integer eventTableID) {
-        return courseTimeTableRepository.findByEventTableID(eventTableID);
-    }
-
     public void save(CourseTimeTable courseTimeTable) {
         courseTimeTableRepository.save(courseTimeTable);
-    }
-
-    public void deleteByEventTableID(Integer eventTableID) {
-        courseTimeTableRepository.deleteByEventTableID(eventTableID);
     }
 }

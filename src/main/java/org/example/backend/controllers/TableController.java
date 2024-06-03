@@ -82,11 +82,11 @@ public class TableController {
         }
         if(eventTable != null) {
             //找到eventTable对应
-            courseTimeTable = courseTimeTableService.findByEventTableID(tableID);
+            courseTimeTable = eventTable.getCourseTimeTable();
             //如果没有对应的表，则创建一个
             if(courseTimeTable == null) {
                 courseTimeTable = new CourseTimeTable();
-                courseTimeTable.setEventTableID(tableID);
+                courseTimeTable.setEventTable(eventTable);
             }
             eventTable.setTableName(tableName);
             eventTable.setBackground(backgroundURL);
@@ -185,7 +185,7 @@ public class TableController {
             eventTableService.saveEventTable(newEventTable);
             newTableID = newEventTable.getTableID();
             CourseTimeTable courseTimeTable = new CourseTimeTable();
-            courseTimeTable.setEventTableID(newTableID);
+            courseTimeTable.setEventTable(newEventTable);
             courseTimeTableService.save(courseTimeTable);
         }
         else {
@@ -210,7 +210,7 @@ public class TableController {
         cookie = MyUtils.setCookie(userID,newTableID);
         ResponsetoisPasswordCorrect response = new ResponsetoisPasswordCorrect();
         response.setCode(1);
-        response.setData(true, newTableID,cookie,newEventTable.getTableName(),newEventTable.getBackground(),newEventTable.getFont(),newEventTable.getCourseColor(),newEventTable.getEventColor(),MyUtils.dateToString(newEventTable.getFirstDayDate()),newEventTable.getWeekAmount(),courseTimeTableService.findByEventTableID(newTableID));
+        response.setData(true,false, newTableID,cookie,newEventTable.getTableName(),newEventTable.getBackground(),newEventTable.getFont(),newEventTable.getCourseColor(),newEventTable.getEventColor(),MyUtils.dateToString(newEventTable.getFirstDayDate()),newEventTable.getWeekAmount(),newEventTable.getCourseTimeTable());
         return response;
     }
 }

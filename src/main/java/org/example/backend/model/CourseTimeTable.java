@@ -16,8 +16,9 @@ public class CourseTimeTable {
     @Column(name = "number")
     private Integer courseNumber;
 
-    @Column(name = "eventtable_id")
-    private Integer eventTableID;
+    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "eventtable_id")
+    private EventTable eventTable;
 
     @Column(name = "time1")
     private String time1;
@@ -186,7 +187,7 @@ public class CourseTimeTable {
     // getters
     public Integer getId() { return id; }
     public Integer getCourseNumber() { return courseNumber; }
-    public Integer getEventTableID() { return eventTableID; }
+    public Integer getEventTableID() { return eventTable.getTableID(); }
     public String getTime1() { return time1; }
     public String getTime2() { return time2; }
     public String getTime3() { return time3; }
@@ -231,7 +232,7 @@ public class CourseTimeTable {
     // setters
     public void setId(Integer id) { this.id = id; }
     public void setCourseNumber(Integer number) { this.courseNumber = number; }
-    public void setEventTableID(Integer eventTableID) { this.eventTableID = eventTableID; }
+    public void setEventTable(EventTable eventTable) { this.eventTable = eventTable; }
     public void setTime1(String time1) { this.time1 = time1; }
     public void setTime2(String time2) { this.time2 = time2; }
     public void setTime3(String time3) { this.time3 = time3; }

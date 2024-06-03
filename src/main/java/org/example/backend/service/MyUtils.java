@@ -13,6 +13,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
+import java.time.format.DateTimeFormatter;
+import java.time.LocalTime;
 
 public class MyUtils {
     //处理一些公共的问题，比如时间转换，cookie信息读取等等
@@ -20,7 +22,7 @@ public class MyUtils {
     //读取cookie信息
 
     public static String[] getCookieInfo(String cookie) {
-        //cookie的形式是 "userID = "+ userID + "; tableID = " + tableID，我需要读出userID和tableID
+        //cookie的形式是 "userID="+ userID + ";tableID=" + tableID，我需要读出userID和tableID
         String[] keyValuePairs = cookie.split(";");
         String[] cookieInfo = new String[2]; // 0: userID, 1: tableID
 
@@ -39,7 +41,7 @@ public class MyUtils {
                     cookieInfo[0] = value;
                 }
                 // 找到键为 "tableID" 的值
-                else if (key.equalsIgnoreCase("tableID")) {
+                if (key.equalsIgnoreCase("tableID")) {
                     cookieInfo[1] = value;
                 }
             }
@@ -48,6 +50,8 @@ public class MyUtils {
         return cookieInfo;
     }
 
+    @org.jetbrains.annotations.NotNull
+    @org.jetbrains.annotations.Contract(pure = true)
     public static String setCookie(String userID, Integer tableID) {
         String cookieValue = "userID="+ userID + ";tableID=" + tableID;
         return cookieValue;
@@ -55,7 +59,7 @@ public class MyUtils {
 
     public static Date stringToDate(String date) {
         //将字符串转换成日期
-        if(date == null)
+        if(date == null||date.isEmpty())
             return null;
         else {
             date = date.replace("/", "-");
@@ -116,12 +120,12 @@ public class MyUtils {
             //如果被调休则替换日期,但要特殊处理直接放假的天，正常显示日程但不显示课程
             if (!changeTables.isEmpty()) {
                 for (ChangeTable changeTable : changeTables) {
-                    if (changeTable != null) {
+//                    if (changeTable != null) {
                         if (changeTable.getModifiedDate().equals(currentDate)) {
                             replaceDate = changeTable.getReplaceDate();
                             isChanged = true;
                         }
-                    }
+//                    }
                 }
             }
             //先获取这是第几周的第几天
@@ -230,9 +234,10 @@ public class MyUtils {
         return booleans;
     }
 
-    public static String[] getBothTimeByTwoNumber(Integer tableID,Integer startTimeNumber,Integer endTimeNumber,CourseTimeTableService courseTimeTableService){
+    public static String[] getBothTimeByTwoNumber(EventTable eventTable,Integer startTimeNumber,Integer endTimeNumber,CourseTimeTableService courseTimeTableService){
         //根据tableID和startTimeNumber找到对应的startTime
-        CourseTimeTable courseTimeTable = courseTimeTableService.findByEventTableID(tableID);
+
+        CourseTimeTable courseTimeTable = eventTable.getCourseTimeTable();
         String[] bothTime = new String[2];
         switch (startTimeNumber) {
             case 1:
@@ -502,5 +507,42 @@ public class MyUtils {
                 break;
         }
         return bothTime;
+    }
+
+    public static int hasCommonWeek(String week1,String week2){
+        //length为较短字符串的长度
+        int length = week1.length() > week2.length() ? week2.length() : week1.length();
+        //判断两个周数是否有重合
+        for(int i = 0;i < length;i++){
+            if(week1.charAt(i) == '1' && week2.charAt(i) == '1'){
+                return (i+1);
+            }
+        }
+        return 0;
+    }
+
+    public static boolean isTimeRepeat(String startTime1,String endTime1,String startTime2,String endTime2){
+        //判断两个时间段是否有重合,第一个的开始事件大于等于第二个的结束时间，或者第一个的结束时间小于等于第二个的开始时间
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+        DateTimeFormatter timeFormatter2 = DateTimeFormatter.ofPattern("H:mm:ss");
+
+        // 解析时间字符串
+        if(startTime1.length() == 7)
+            startTime1 = "0" + startTime1;
+        if(endTime1.length() == 7)
+            endTime1 = "0" + endTime1;
+        if(startTime2.length() == 7)
+            startTime2 = "0" + startTime2;
+        if(endTime2.length() == 7)
+            endTime2 = "0" + endTime2;
+        LocalTime time1Start = LocalTime.parse(startTime1, timeFormatter);
+        LocalTime time1End = LocalTime.parse(endTime1, timeFormatter);
+        LocalTime time2Start = LocalTime.parse(startTime2, timeFormatter);
+        LocalTime time2End = LocalTime.parse(endTime2, timeFormatter);
+
+        // 判断两个时间段是否有重合
+        // 第一个时间段的开始时间在第二个时间段的开始时间和结束时间之间
+        // 或者第一个时间段的结束时间在第二个时间段的开始时间和结束时间之间
+        return !(time1Start.isAfter(time2End) || time1End.isBefore(time2Start));
     }
 }

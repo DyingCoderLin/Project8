@@ -30,11 +30,14 @@ public class Event {
     @Column(name = "week")
     private String week;
 
-    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.DETACH)
+    @Column(name = "note")
+    private String note;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "eventtable_id")
     private EventTable eventTable;
 
-    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "event", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private Set<EventTime> eventTimes;
 
     public Event() {
@@ -44,6 +47,7 @@ public class Event {
         this.courseCode = "课程代码";
         this.isImportant = false;
         this.week = "00000000000000000000";
+        this.note = "";
     }
 
     //不需要声明id，因为generationtype会自动生成id
@@ -64,6 +68,7 @@ public class Event {
     public String getCourseCode() { return courseCode; }
     public boolean getIsImportant() { return isImportant; }
     public String getWeek() { return week; }
+    public String getNote() { return note; }
 
     // setters
     public void setEventID(Integer eventID) { this.eventID = eventID; }
@@ -77,5 +82,9 @@ public class Event {
     public EventTable getEventTable() { return eventTable; }
     public Set<EventTime> getEventTimes() { return eventTimes; }
     public void setEventTimes(Set<EventTime> eventTimes) { this.eventTimes = eventTimes; }
-    public void detach() { this.eventTable.getEvents().remove(this); }
+    public void detach() {
+        if(this.eventTable != null)
+        this.eventTable.getEvents().remove(this);
+    }
+    public void setNote(String note) { this.note = note; }
 }

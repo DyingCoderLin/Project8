@@ -29,16 +29,20 @@ public class User {
     @Column(name = "avatar_url")
     private String AvatarURL;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Column(name = "is_first_login")
+    private boolean isFirstLogin;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private Set<EventTable> eventTables;
 
-    @OneToMany(mappedBy = "changeTableUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "changeTableUser", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private Set<ChangeTable> changeTables;
 
     public User(){
         this.userGender = true;
         this.userLocation = "China";
         this.userName = "新用户";
+        this.isFirstLogin = true;
     }
 
     public User(String userID,String userName, boolean userGender, String password, String userLocation, String AvatarURL) {
@@ -53,6 +57,7 @@ public class User {
     // getters
     public String getUserID() { return userID; }
     public String getUserName() { return userName; }
+    public boolean getIsFirstLogin() { return isFirstLogin; }
     public boolean getUserGender() { return userGender; }
     public String getPassword() { return password; }
     public String getUserLocation() { return userLocation; }
@@ -62,6 +67,7 @@ public class User {
     // setters
     public void setUserID(String userID) { this.userID = userID; }
     public void setUserName(String userName) { this.userName = userName; }
+    public void setIsFirstLogin(boolean isFirstLogin) { this.isFirstLogin = isFirstLogin; }
     public void setUserGender(boolean userGender) { this.userGender = userGender; }
     public void setPassword(String password) { this.password = password; }
     public void setUserLocation(String userLocation) { this.userLocation = userLocation; }
