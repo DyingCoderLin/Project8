@@ -36,7 +36,7 @@ CREATE TABLE `eventtable` (
   PRIMARY KEY (`tableid`),
   KEY `FK12tescg9heem34777exlt9kj6` (`for_userid`),
   CONSTRAINT `FK12tescg9heem34777exlt9kj6` FOREIGN KEY (`for_userid`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -45,7 +45,7 @@ CREATE TABLE `eventtable` (
 
 LOCK TABLES `eventtable` WRITE;
 /*!40000 ALTER TABLE `eventtable` DISABLE KEYS */;
-INSERT INTO `eventtable` VALUES (_binary '','2024-06-03',12,20,'background.jpg','#002fa7','#f16326','微软雅黑','lin040430','默认表');
+INSERT INTO `eventtable` VALUES (_binary '\0','2024-06-04',13,20,'background.jpg','#002fa7','#f16326','微软雅黑','lin040430','新建工作表1'),(_binary '\0','2024-06-04',14,20,'background.jpg','#002fa7','#f16326','微软雅黑','lin040430','lalala'),(_binary '\0','2024-06-04',15,20,'background.jpg','#002fa7','#f16326','微软雅黑','lin040430','lalala'),(_binary '','2024-06-04',16,20,'background.jpg','#002fa7','#f16326','微软雅黑','lin040430','lalala');
 /*!40000 ALTER TABLE `eventtable` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -58,4 +58,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-06-03 17:24:51
+-- Dump completed on 2024-06-04  0:52:56

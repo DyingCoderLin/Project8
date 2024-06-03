@@ -44,7 +44,6 @@ CREATE TABLE `event` (
 
 LOCK TABLES `event` WRITE;
 /*!40000 ALTER TABLE `event` DISABLE KEYS */;
-INSERT INTO `event` VALUES (11,12,_binary '\0',_binary '\0','课程代码','myHome','myFirstClass','10000000000000','害羞老实人一枚捏~'),(12,12,_binary '\0',_binary '\0','课程代码','myHome','myFirstClass','10010000000001',''),(13,12,_binary '\0',_binary '','课程代码','myHome','myFirstClass','10000000000000','');
 /*!40000 ALTER TABLE `event` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -57,4 +56,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-06-03 17:24:51
+-- Dump completed on 2024-06-04  0:52:56
