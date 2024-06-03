@@ -23,7 +23,7 @@ DROP TABLE IF EXISTS `coursetimetable`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `coursetimetable` (
-  `eventtable_id` int DEFAULT NULL,
+  `eventtable_id` int NOT NULL,
   `id` int NOT NULL AUTO_INCREMENT,
   `number` int DEFAULT NULL,
   `time1` varchar(255) DEFAULT NULL,
@@ -66,8 +66,10 @@ CREATE TABLE `coursetimetable` (
   `time7` varchar(255) DEFAULT NULL,
   `time8` varchar(255) DEFAULT NULL,
   `time9` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3;
+  PRIMARY KEY (`id`),
+  KEY `fk_eventtable_idx` (`eventtable_id`),
+  CONSTRAINT `fk_eventtable` FOREIGN KEY (`eventtable_id`) REFERENCES `eventtable` (`tableid`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -76,7 +78,7 @@ CREATE TABLE `coursetimetable` (
 
 LOCK TABLES `coursetimetable` WRITE;
 /*!40000 ALTER TABLE `coursetimetable` DISABLE KEYS */;
-INSERT INTO `coursetimetable` VALUES (1,1,13,'08:00:00','13:00:00','13:00:00','14:00:00','14:00:00','15:00:00','15:00:00','16:00:00','16:00:00','17:00:00','17:00:00','09:00:00','18:00:00','18:00:00','19:00:00','19:00:00','20:00:00','20:00:00','21:00:00','21:00:00','21:45:00','21:55:00','09:00:00','22:40:00','23:00:00','23:00:00','23:00:00','23:00:00','23:00:00','23:00:00','23:00:00','23:00:00','23:00:00','10:00:00','23:00:00','10:30:00','11:00:00','11:00:00','11:30:00','12:00:00'),(2,2,12,'08:00:00','12:45:00','12:55:00','13:40:00','14:00:00','14:45:00','14:55:00','15:40:00','16:00:00','16:45:00','16:55:00','08:45:00','17:40:00','18:00:00','18:45:00','18:55:00','19:40:00','20:00:00','20:45:00','21:00:00','21:45:00','21:55:00','08:55:00','22:40:00','23:00:00','23:00:00','23:00:00','23:00:00','23:00:00','23:00:00','23:00:00','23:00:00','23:00:00','09:40:00','23:00:00','10:00:00','10:45:00','10:55:00','11:40:00','12:00:00');
+INSERT INTO `coursetimetable` VALUES (12,12,12,'08:00:00','12:45:00','12:55:00','13:40:00','14:00:00','14:45:00','14:55:00','15:40:00','16:00:00','16:45:00','16:55:00','08:45:00','17:40:00','18:00:00','18:45:00','18:55:00','19:40:00','20:00:00','20:45:00','21:00:00','21:45:00','21:55:00','08:55:00','22:40:00','23:00:00','23:00:00','23:00:00','23:00:00','23:00:00','23:00:00','23:00:00','23:00:00','23:00:00','09:40:00','23:00:00','10:00:00','10:45:00','10:55:00','11:40:00','12:00:00');
 /*!40000 ALTER TABLE `coursetimetable` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -89,4 +91,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-05-07 22:01:43
+-- Dump completed on 2024-06-03 17:24:52

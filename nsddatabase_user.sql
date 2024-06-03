@@ -24,11 +24,12 @@ DROP TABLE IF EXISTS `user`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `user` (
   `user_gender` bit(1) DEFAULT NULL,
-  `avatar_url` varchar(255) DEFAULT NULL,
+  `avatar_url` mediumtext,
   `password` varchar(255) DEFAULT NULL,
   `user_id` varchar(255) NOT NULL,
   `user_location` varchar(255) DEFAULT NULL,
   `user_name` varchar(255) DEFAULT NULL,
+  `is_first_login` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -39,7 +40,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (_binary '','image','20040430','lin040430','上海','路人甲');
+INSERT INTO `user` VALUES (_binary '','imagemyAvatar','040430','lin040430','上海','路人甲',0);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -52,4 +53,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-05-07 22:01:43
+-- Dump completed on 2024-06-03 17:24:51

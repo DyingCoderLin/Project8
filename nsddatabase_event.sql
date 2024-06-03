@@ -31,10 +31,11 @@ CREATE TABLE `event` (
   `event_location` varchar(255) DEFAULT NULL,
   `event_name` varchar(255) DEFAULT NULL,
   `week` varchar(255) DEFAULT NULL,
+  `note` longtext,
   PRIMARY KEY (`event_id`),
   KEY `FKn9qtocru5nui6pghig016qcsj` (`eventtable_id`),
-  CONSTRAINT `FKn9qtocru5nui6pghig016qcsj` FOREIGN KEY (`eventtable_id`) REFERENCES `eventtable` (`tableid`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3;
+  CONSTRAINT `FKn9qtocru5nui6pghig016qcsj` FOREIGN KEY (`eventtable_id`) REFERENCES `eventtable` (`tableid`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -43,7 +44,7 @@ CREATE TABLE `event` (
 
 LOCK TABLES `event` WRITE;
 /*!40000 ALTER TABLE `event` DISABLE KEYS */;
-INSERT INTO `event` VALUES (1,1,_binary '\0',_binary '\0',NULL,'myHome','mySecondEvent','10000000000000'),(2,1,_binary '\0',_binary '',NULL,'myHome','myFirstEvent','10000000000000');
+INSERT INTO `event` VALUES (11,12,_binary '\0',_binary '\0','课程代码','myHome','myFirstClass','10000000000000','害羞老实人一枚捏~'),(12,12,_binary '\0',_binary '\0','课程代码','myHome','myFirstClass','10010000000001',''),(13,12,_binary '\0',_binary '','课程代码','myHome','myFirstClass','10000000000000','');
 /*!40000 ALTER TABLE `event` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -56,4 +57,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-05-07 22:01:43
+-- Dump completed on 2024-06-03 17:24:51

@@ -32,8 +32,8 @@ CREATE TABLE `eventtime` (
   `start_time` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`eventtime_id`),
   KEY `FKfbt049ghmjsv7cu80area2vgk` (`event_id`),
-  CONSTRAINT `FKfbt049ghmjsv7cu80area2vgk` FOREIGN KEY (`event_id`) REFERENCES `event` (`event_id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3;
+  CONSTRAINT `FKfbt049ghmjsv7cu80area2vgk` FOREIGN KEY (`event_id`) REFERENCES `event` (`event_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -42,7 +42,7 @@ CREATE TABLE `eventtime` (
 
 LOCK TABLES `eventtime` WRITE;
 /*!40000 ALTER TABLE `eventtime` DISABLE KEYS */;
-INSERT INTO `eventtime` VALUES (1,4,1,1,3,'11:30:00','10:30:00'),(3,6,1,2,5,'14:00:00','12:00:00'),(1,0,2,3,0,'13:14:00','5:20:00');
+INSERT INTO `eventtime` VALUES (1,2,11,14,1,'09:40:00','08:00:00'),(3,6,11,15,5,'13:40:00','12:00:00'),(1,2,12,16,1,'09:40:00','08:00:00'),(3,6,12,17,5,'13:40:00','12:00:00'),(1,0,13,18,0,'16:14:00','15:20:00');
 /*!40000 ALTER TABLE `eventtime` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -55,4 +55,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-05-07 22:01:43
+-- Dump completed on 2024-06-03 17:24:51

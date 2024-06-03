@@ -30,7 +30,7 @@ CREATE TABLE `changetable` (
   PRIMARY KEY (`change_tableid`),
   KEY `FKpn47m840pa4vku3dd9cb64cf0` (`userid`),
   CONSTRAINT `FKpn47m840pa4vku3dd9cb64cf0` FOREIGN KEY (`userid`) REFERENCES `user` (`user_id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -39,7 +39,7 @@ CREATE TABLE `changetable` (
 
 LOCK TABLES `changetable` WRITE;
 /*!40000 ALTER TABLE `changetable` DISABLE KEYS */;
-INSERT INTO `changetable` VALUES (1,'2024-02-19',NULL,'lin040430');
+INSERT INTO `changetable` VALUES (3,'2024-06-03','2024-06-24','lin040430');
 /*!40000 ALTER TABLE `changetable` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -52,4 +52,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-05-07 22:01:43
+-- Dump completed on 2024-06-03 17:24:52
