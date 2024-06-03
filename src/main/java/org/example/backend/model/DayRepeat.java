@@ -33,7 +33,7 @@ public class DayRepeat {
         this.endTimeNumber = endTimeNumber;
     }
 
-    public void setEventDayRepeat(int date,String startTime,String endTimer){
+    public void setEventDayRepeat(int date,String startTime,String endTime){
         this.date = date;
         this.startTime = startTime;
         this.endTime = endTime;

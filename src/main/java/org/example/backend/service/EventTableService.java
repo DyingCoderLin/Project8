@@ -26,6 +26,18 @@ public class EventTableService {
         this.eventService = eventService;
     }
 
+    public long countAll() {
+        return eventTableRepository.count();
+    }
+
+    public EventTable getByTableID(Integer tableID) {
+        return eventTableRepository.getByTableID(tableID);
+    }
+
+    public List<EventTable> findByTableNameContaining(String tableName) {
+        return eventTableRepository.findByTableNameContaining(tableName);
+    }
+
     public void saveEventTable(EventTable eventTable) {
         eventTableRepository.save(eventTable);
     }

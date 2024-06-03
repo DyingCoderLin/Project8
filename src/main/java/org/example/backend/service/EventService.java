@@ -53,6 +53,10 @@ public class EventService {
         eventRepository.deleteByEventID(eventID);
     }
 
+    public List<Event> findByEventNameContaining(String eventName) {
+        return eventRepository.findByEventNameContaining(eventName);
+    }
+
     public void updateTime(Event event,CourseTimeTable courseTimeTable){
         for(EventTime eventTime : event.getEventTimes()){
             String[] bothTime = MyUtils.getBothTimeWithCourseTimeTable(eventTime.getStartTimeNumber(),eventTime.getEndTimeNumber(),courseTimeTable);

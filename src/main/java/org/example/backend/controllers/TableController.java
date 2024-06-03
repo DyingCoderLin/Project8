@@ -132,8 +132,10 @@ public class TableController {
         }
         //TODO：删除eventTable和courseTimeTable和对应的event
         if(eventTable != null) {
+            if(eventTable.getDefaultTable()){
+                return;
+            }
             //删除eventtable对应的event
-
 //            //删除eventtable对应的coursetimetable
 //            courseTimeTableService.deleteByEventTableID(tableID);
             //删除eventtable本身
@@ -176,15 +178,17 @@ public class TableController {
         oldEventTable.setDefaultTable(false);
         eventTableService.saveEventTable(oldEventTable);
         EventTable newEventTable;
+        CourseTimeTable courseTimeTable = null;
         if(newTableID == 0){//要为它生成新的EventTable对象并插入数据库，将返回的tableID和Cookie更新
             newEventTable = new EventTable();
             newEventTable.setUser(user);
-            newEventTable.setTableName("新建工作表");
+//            long count = eventTableService.countAll();
+//            newEventTable.setTableName("新建工作表"+(count+1));
             newEventTable.setDefaultTable(true);
             newEventTable.setTableName(tableName);
             eventTableService.saveEventTable(newEventTable);
             newTableID = newEventTable.getTableID();
-            CourseTimeTable courseTimeTable = new CourseTimeTable();
+            courseTimeTable = new CourseTimeTable();
             courseTimeTable.setEventTable(newEventTable);
             courseTimeTableService.save(courseTimeTable);
         }
@@ -203,6 +207,7 @@ public class TableController {
                 newTableID = 0;
             }
             else {
+                courseTimeTable = newEventTable.getCourseTimeTable();
                 newEventTable.setDefaultTable(true);
                 eventTableService.saveEventTable(newEventTable);
             }
@@ -210,7 +215,7 @@ public class TableController {
         cookie = MyUtils.setCookie(userID,newTableID);
         ResponsetoisPasswordCorrect response = new ResponsetoisPasswordCorrect();
         response.setCode(1);
-        response.setData(true,false, newTableID,cookie,newEventTable.getTableName(),newEventTable.getBackground(),newEventTable.getFont(),newEventTable.getCourseColor(),newEventTable.getEventColor(),MyUtils.dateToString(newEventTable.getFirstDayDate()),newEventTable.getWeekAmount(),newEventTable.getCourseTimeTable());
+        response.setData(true,false, newTableID,cookie,newEventTable.getTableName(),newEventTable.getBackground(),newEventTable.getFont(),newEventTable.getCourseColor(),newEventTable.getEventColor(),MyUtils.dateToString(newEventTable.getFirstDayDate()),newEventTable.getWeekAmount(),courseTimeTable);
         return response;
     }
 }

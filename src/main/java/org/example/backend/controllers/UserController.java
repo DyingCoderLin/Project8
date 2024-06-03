@@ -101,6 +101,7 @@ public class UserController {
             response.setData(true);
             response.setCode(1);
             EventTable eventTable = new EventTable();
+            eventTable.setTableName("新建工作表1");
             eventTable.setUser(user);
             eventTable.setDefaultTable(true);
             eventTableService.saveEventTable(eventTable);
