@@ -28,16 +28,20 @@ public class AIController {
     @Autowired
     private AIService aiService;
 
-    private String head = "提取信息,如果无法识别则为设置为\"\"空字符串。\n" +
-            "\"type\"（数字，新建课程为0，新建日程为1，切换工作表为2，工作表创建为3，删除课程或日程为4，删除工作表为5），\n" +
+    private String head = "提取信息,如果无法识别则为设置为\"\"空字符串，一定按照json格式返回。每天是每周加上星期1、星期2、星期3、星期4、星期5、星期6、星期7全都要。\n" +
+            "\"type\"（数字，新建课程为0，新建日程为1，切换工作表为2，工作表创建为3，删除课程或日程为4，删除工作表为5，没有匹配上为-1），\n" +
             "\"eventName\"（字符串）、\"eventLocation\"（字符串）、\"weekRepeat\"（字符串，仅为\"每周\"、\"单周\"、\"双周\"、\"本周\"、\"下周\"、\"\"）、\"week\"（数字的List，表示第几周有课）、\"date\"（1-7数字，星期1-星期7）、\"startTime\"（字符串\"xx:xx:xx\",时分秒，开始时间，如果没有提到就为空字符串）、\"endTime\"（字符串\"xx:xx:xx\",时分秒，结束时间，如果没有提到就为空字符串）、\"startTimeNumber\"（数字，开始节课）、\"endTimeNumber\"（数字，结束节课），\n" +
             "\"tableName\"（工作表名）、\"font\"（字符串，仅为\"楷体\"、\"宋体\"、\"幼圆\"、\"\"）、\"weekAmount\"（数字，这个工作表有几周）\n" +
+            "如果没有匹配上，按照如下json格式返回。\n" +
+            "{\n" +
+            "    \"type\": -1\n" +
+            "}\n" +
             "如果是新建课程，按照如下json格式返回。\n" +
             "{\n" +
             "    \"type\": 0,\n" +
             "    \"event\": {\n" +
-            "        \"eventName\": \"math111\",\n" +
-            "        \"eventLocation\": \"class222\",\n" +
+            "        \"eventName\": \"课程名字\",\n" +
+            "        \"eventLocation\": \"课程地点\",\n" +
             "        \"weekRepeat\": \"双周\",\n" +
             "        \"week\": [8，9],\n" +
             "        \"dayRepeat\": [\n" +
@@ -58,8 +62,8 @@ public class AIController {
             "{\n" +
             "    \"type\": 1,\n" +
             "    \"event\": {\n" +
-            "        \"eventName\": \"math111\",\n" +
-            "        \"eventLocation\": \"class222\",\n" +
+            "        \"eventName\": \"日程名字\",\n" +
+            "        \"eventLocation\": \"日程地点\",\n" +
             "        \"weekRepeat\": \"单周\",\n" +
             "        \"week\": [8，9],\n" +
             "        \"dayRepeat\": [\n" +
@@ -79,24 +83,24 @@ public class AIController {
             "如果是切换工作表，按照如下json格式返回。\n" +
             "{\n" +
             "    \"type\": 2,\n" +
-            "    \"tableName\": \"我的工作表2\"\n" +
+            "    \"tableName\": \"工作表名字\"\n" +
             "}\n" +
             "如果是创建工作表，按照如下json格式返回。\n" +
             "{\n" +
             "    \"type\": 3，\n" +
-            "    \"tableName\": \"大二上\",\n" +
-            "    \"font\": \"宋体\",\n" +
+            "    \"tableName\": \"工作表名字\",\n" +
+            "    \"font\": \"字体\",\n" +
             "    \"weekAmount\": 18\n" +
             "}\n" +
             "如果是删除课程或日程，按照如下json格式返回。\n" +
             "{\n" +
             "    \"type\": 4，\n" +
-            "    \"eventName\": \"math111\"\n" +
+            "    \"eventName\": \"课程或者日程名字\"\n" +
             "}\n" +
             "如果是删除工作表，按照如下json格式返回。\n" +
             "{\n" +
             "    \"type\": 5，\n" +
-            "    \"tableName\": \"工作表3\"\n" +
+            "    \"tableName\": \"工作表名字\"\n" +
             "}\n\n";
     @PostMapping("/Ai/chat1")
     public ResponseAI chat1(@RequestHeader(value = "Cookie") String cookie,
