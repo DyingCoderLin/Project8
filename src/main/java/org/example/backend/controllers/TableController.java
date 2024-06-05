@@ -2,6 +2,7 @@ package org.example.backend.controllers;
 
 import org.example.backend.model.*;
 import org.example.backend.service.*;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -113,34 +114,61 @@ public class TableController {
     }
 
     @PostMapping("/deleteTable")
-    public void deleteTable(@RequestHeader(value="Cookie") String cookie) {
+    public ResponsetoDeleteTable deleteTable(@RequestHeader(value="Cookie") String cookie,
+                                            @RequestBody Map<String,Object> requestBody) {
+        Logger log = org.slf4j.LoggerFactory.getLogger(TableController.class);
         String userID = null;
-        Integer tableID = 0;
+        Integer nowtableID = 0;
         String[] cookieInfo = MyUtils.getCookieInfo(cookie);
         userID = cookieInfo[0];
-        tableID = Integer.parseInt(cookieInfo[1]);
+        nowtableID = Integer.parseInt(cookieInfo[1]);
+        Integer deleteTableID = (Integer)requestBody.get("tableID");
         //根据userID和tableID找到对应的eventTable
-        Set<EventTable> eventTables = userService.getEventTablesByuserID(userID);
+        User user = userService.getUserByUserID(userID);
+        List<EventTable> eventTables = eventTableService.findByUser(user);
+        //如果只有一个工作表，不允许删除
+        log.info("eventTables.size() = " + eventTables.size());
+        if(eventTables.size() == 1) {
+            ResponsetoDeleteTable response = new ResponsetoDeleteTable(false,"");
+            return response;
+        }
         EventTable eventTable = null;
         //找到userID,tableID对应的eventTable
         //还要找到eventTable对应的courseTimeTable
         for (EventTable et : eventTables) {
-            if (Objects.equals(et.getTableID(), tableID)) {
+            if (Objects.equals(et.getTableID(), deleteTableID)) {
                 eventTable = et;
                 break;
             }
         }
         //TODO：删除eventTable和courseTimeTable和对应的event
+        ResponsetoDeleteTable response = null;
         if(eventTable != null) {
+            //如果删除的是默认表，则将第一个表设为默认表并返回一个新的cookie
             if(eventTable.getDefaultTable()){
-                return;
+                EventTable newDefaultTable = null;
+                for(EventTable et : eventTables){
+                    if(!et.getDefaultTable()){
+                        newDefaultTable = et;
+                        break;
+                    }
+                }
+                newDefaultTable.setDefaultTable(true);
+                eventTableService.saveEventTable(newDefaultTable);
+                cookie = MyUtils.setCookie(userID,newDefaultTable.getTableID());
+                response = new ResponsetoDeleteTable(true,cookie);
+            }
+            else{
+                cookie = MyUtils.setCookie(userID,nowtableID);
+                response = new ResponsetoDeleteTable(true,cookie);
             }
             //删除eventtable对应的event
 //            //删除eventtable对应的coursetimetable
 //            courseTimeTableService.deleteByEventTableID(tableID);
             //删除eventtable本身
-            eventTableService.deleteByTableID(tableID);
+            eventTableService.deleteByTableID(deleteTableID);
         }
+        return response;
     }
 
     @GetMapping("/getAllTableInfo")
@@ -182,8 +210,8 @@ public class TableController {
         if(newTableID == 0){//要为它生成新的EventTable对象并插入数据库，将返回的tableID和Cookie更新
             newEventTable = new EventTable();
             newEventTable.setUser(user);
-//            long count = eventTableService.countAll();
-//            newEventTable.setTableName("新建工作表"+(count+1));
+//            long count = eventTableService.countByUser(user);
+//            newEventTable.setTableName("工作表"+(count+1));
             newEventTable.setDefaultTable(true);
             newEventTable.setTableName(tableName);
             eventTableService.saveEventTable(newEventTable);

@@ -26,12 +26,16 @@ public class EventTableService {
         this.eventService = eventService;
     }
 
-    public long countAll() {
-        return eventTableRepository.count();
+    public long countByUser(User user) {
+        return eventTableRepository.countByUser(user);
     }
 
     public EventTable getByTableID(Integer tableID) {
         return eventTableRepository.getByTableID(tableID);
+    }
+
+    public List<EventTable> findByUser(User user) {
+        return eventTableRepository.findByUser(user);
     }
 
     public List<EventTable> findByTableNameContaining(String tableName) {

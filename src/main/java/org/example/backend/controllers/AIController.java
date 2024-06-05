@@ -19,14 +19,7 @@ import reactor.core.publisher.Flux;
 
 @RestController
 public class AIController {
-    @Resource
-    private OpenAiChatModel openAiChatModel;
 
-    @Resource
-    private ObjectMapper objectMapper;
-
-    @Autowired
-    private AIService aiService;
 
     private String head = "提取信息,如果无法识别则为设置为\"\"空字符串，一定按照json格式返回。每天是每周加上星期1、星期2、星期3、星期4、星期5、星期6、星期7全都要。\n" +
             "\"type\"（数字，新建课程为0，新建日程为1，切换工作表为2，工作表创建为3，删除课程或日程为4，删除工作表为5，没有匹配上为-1），\n" +
@@ -102,6 +95,12 @@ public class AIController {
             "    \"type\": 5，\n" +
             "    \"tableName\": \"工作表名字\"\n" +
             "}\n\n";
+    @Resource
+    private OpenAiChatModel openAiChatModel;
+    @Resource
+    private ObjectMapper objectMapper;
+    @Autowired
+    private AIService aiService;
     @PostMapping("/Ai/chat1")
     public ResponseAI chat1(@RequestHeader(value = "Cookie") String cookie,
                             @RequestBody String str) throws JsonProcessingException
