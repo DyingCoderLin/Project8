@@ -10,6 +10,7 @@ import java.sql.Date;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAdjusters;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
@@ -76,13 +77,26 @@ public class MyUtils {
         }
     }
 
+    public static int getWeekDiff(Date oldDate,Date newDate){
+        //计算两个日期之间的周数差
+        LocalDate oldLocalDate = oldDate.toLocalDate();
+        LocalDate newLocalDate = newDate.toLocalDate();
+        oldLocalDate = oldLocalDate.with(TemporalAdjusters.previousOrSame(java.time.DayOfWeek.MONDAY));
+        newLocalDate = newLocalDate.with(TemporalAdjusters.previousOrSame(java.time.DayOfWeek.MONDAY));
+        long dayDifference = ChronoUnit.DAYS.between(oldLocalDate, newLocalDate);
+        // 计算新的比旧的晚多少天，算出来的是晚几周
+        int weekDiff = (int) (dayDifference / 7);
+        return weekDiff;
+    }
+
     public static Integer[] DateToWeekandDay(Date firstDayDate,Date calculateDate){
         //将日期转换成星期和日期
         LocalDate firstDay = firstDayDate.toLocalDate();
+        firstDay = firstDay.with(TemporalAdjusters.previousOrSame(java.time.DayOfWeek.MONDAY));
         LocalDate calculateDay = calculateDate.toLocalDate();
         long dayDifference = ChronoUnit.DAYS.between(firstDay, calculateDay);
         int weekNum = (int) (dayDifference / 7) + 1;
-        int startDay = firstDayDate.toLocalDate().getDayOfWeek().getValue();
+//        int startDay = firstDayDate.toLocalDate().getDayOfWeek().getValue();
         int dayNum = calculateDate.toLocalDate().getDayOfWeek().getValue();
         Integer[] weekAndDay = new Integer[2];
         weekAndDay[0] = weekNum;

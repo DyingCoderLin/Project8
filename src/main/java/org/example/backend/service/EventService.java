@@ -8,6 +8,7 @@ import org.example.backend.repository.EventRepository;
 import org.springframework.transaction.annotation.Transactional;
 import org.example.backend.model.*;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -29,6 +30,29 @@ public class EventService {
     public void deleteEventByEventID(int eventID) {
         eventRepository.deleteByEventID(eventID);
     }
+
+//    public void adaptAllSchedules(EventTable eventTable, Date newFirstDayDate){
+//        //计算出新的第一天和之前的第一天之间差几周，然后将每个日程的weekrepeat进行调整
+//        int weekDiff = MyUtils.getWeekDiff(eventTable.getFirstDayDate(),newFirstDayDate);
+//        System.out.println("weekDiff: " + weekDiff);
+//        for(Event event : eventTable.getEvents()){
+//            if(event.getType()){
+//                String oldweekRepeat = event.getWeek();
+//                String newWeekRepeat = "";
+//                for(int i = 0; i < eventTable.getWeekAmount(); i++){
+//                    //将所有位设置成"0"
+//                    newWeekRepeat += '0';
+//                }
+//                for(int i = 0; i < eventTable.getWeekAmount() && i < oldweekRepeat.length() ; i++){
+//                    if(i + weekDiff < eventTable.getWeekAmount() && i + weekDiff >= 0 && oldweekRepeat.charAt(i) == '1'){
+//                        int newWeek = i + weekDiff;
+//                        //将newWeekRepeat的第newWeek位从0更改为1
+//                        newWeekRepeat = newWeekRepeat.substring(0,newWeek) + '1' + newWeekRepeat.substring(newWeek + 1);
+//                    }
+//                }
+//            }
+//        }
+//    }
 
     public void saveEvent(Event event) {
         eventRepository.save(event);

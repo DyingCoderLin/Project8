@@ -45,6 +45,11 @@ public class EventController {
         String eventLocation = (String) requestBody.get("eventLocation");
         String courseCode = (String) requestBody.get("courseCode");
         String weekRepeat = (String) requestBody.get("weekRepeat");
+        if(weekRepeat.length()<20){
+            for(int i = weekRepeat.length(); i < 20; i++){
+                weekRepeat += '0';
+            }
+        }
         Boolean isImportant = (Boolean) requestBody.get("isImportant");
         List<Map<String, Object>> dayRepeatList = (List<Map<String, Object>>) requestBody.get("dayRepeat");
         Boolean isDirectlySave = (Boolean) requestBody.get("isDirectlySave");
@@ -238,6 +243,7 @@ public class EventController {
         User user = userService.getUserByUserID(userID);
         EventTable eventTable = user.getEventTableByTableID(tableID);
         Set<Event> events = eventTable.getEvents();
+        log.info("event's size"+ events.size());
         ResponsetoGetAllCourseinNote responsetoGetAllCourseinNote = new ResponsetoGetAllCourseinNote();
         responsetoGetAllCourseinNote.setCourseInfoinNote(events);
 //        log.info("get all course in note");
@@ -257,7 +263,7 @@ public class EventController {
         }
     }
 
-    @GetMapping("/getOneCourseNote")
+    @PostMapping("/getOneCourseNote")
     public ResponsetoGetOneCourseNote getOneCourseNote(@RequestHeader(value = "Cookie") String cookie,
                                                        @RequestBody Map<String, Object> requestBody) {
         Logger log = LoggerFactory.getLogger(EventController.class);

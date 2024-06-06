@@ -54,7 +54,6 @@ public class TableController {
             courseNumber = (Integer) requestBody.get("courseNum");
         }
 
-
         List<Map<String, String>> courseTimeList = (List<Map<String, String>>) requestBody.get("courseTime");
         List<CourseTime> courseTimes = new ArrayList<>();
 
@@ -94,7 +93,11 @@ public class TableController {
             eventTable.setFont(font);
             eventTable.setCourseColor(courseColor);
             eventTable.setEventColor(eventColor);
+            //如果firstDayDate不同，则要对所有日程的时间进行更新
+//            if(MyUtils.stringToDate(firstDayDate) != eventTable.getFirstDayDate())
+//                eventService.adaptAllSchedules(eventTable,MyUtils.stringToDate(firstDayDate));
             eventTable.setFirstDayDate(MyUtils.stringToDate(firstDayDate));
+            if(weekAmount != 0)
             eventTable.setWeekAmount(weekAmount);
             if(courseNumber != 0) {
                 courseTimeTable.setAllCourseTime(courseNumber,courseTimes);
