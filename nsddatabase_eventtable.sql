@@ -24,6 +24,7 @@ DROP TABLE IF EXISTS `eventtable`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `eventtable` (
   `defaulttable` bit(1) DEFAULT NULL,
+  `done_import` bit(1) DEFAULT NULL,
   `first_day_date` date DEFAULT NULL,
   `tableid` int NOT NULL AUTO_INCREMENT,
   `week_amount` int DEFAULT NULL,
@@ -35,8 +36,8 @@ CREATE TABLE `eventtable` (
   `table_name` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`tableid`),
   KEY `FK12tescg9heem34777exlt9kj6` (`for_userid`),
-  CONSTRAINT `FK12tescg9heem34777exlt9kj6` FOREIGN KEY (`for_userid`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb3;
+  CONSTRAINT `FK12tescg9heem34777exlt9kj6` FOREIGN KEY (`for_userid`) REFERENCES `user` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -45,7 +46,7 @@ CREATE TABLE `eventtable` (
 
 LOCK TABLES `eventtable` WRITE;
 /*!40000 ALTER TABLE `eventtable` DISABLE KEYS */;
-INSERT INTO `eventtable` VALUES (_binary '\0','2024-06-04',13,20,'background.jpg','#002fa7','#f16326','微软雅黑','lin040430','新建工作表1'),(_binary '\0','2024-06-04',14,20,'background.jpg','#002fa7','#f16326','微软雅黑','lin040430','lalala'),(_binary '\0','2024-06-04',15,20,'background.jpg','#002fa7','#f16326','微软雅黑','lin040430','lalala'),(_binary '','2024-06-04',16,20,'background.jpg','#002fa7','#f16326','微软雅黑','lin040430','lalala');
+INSERT INTO `eventtable` VALUES (_binary '',_binary '','2024-06-08',1,20,'background.jpg','#002fa7','#f16326','微软雅黑','522031910862','工作表1');
 /*!40000 ALTER TABLE `eventtable` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -58,4 +59,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-06-04  0:52:56
+-- Dump completed on 2024-06-08 20:56:31

@@ -29,8 +29,8 @@ CREATE TABLE `changetable` (
   `userid` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`change_tableid`),
   KEY `FKpn47m840pa4vku3dd9cb64cf0` (`userid`),
-  CONSTRAINT `FKpn47m840pa4vku3dd9cb64cf0` FOREIGN KEY (`userid`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3;
+  CONSTRAINT `FKpn47m840pa4vku3dd9cb64cf0` FOREIGN KEY (`userid`) REFERENCES `user` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -51,4 +51,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-06-04  0:52:56
+-- Dump completed on 2024-06-08 20:56:31

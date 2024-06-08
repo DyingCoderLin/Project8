@@ -23,13 +23,13 @@ DROP TABLE IF EXISTS `user`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `user` (
+  `is_first_login` bit(1) DEFAULT NULL,
   `user_gender` bit(1) DEFAULT NULL,
-  `avatar_url` mediumtext,
+  `avatar_url` varchar(255) DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL,
   `user_id` varchar(255) NOT NULL,
   `user_location` varchar(255) DEFAULT NULL,
   `user_name` varchar(255) DEFAULT NULL,
-  `is_first_login` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -40,7 +40,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (_binary '',NULL,'20040430','lin040430','China','新用户',1);
+INSERT INTO `user` VALUES (_binary '\0',_binary '',NULL,NULL,'522031910862','China','新用户');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -53,4 +53,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-06-04  0:52:56
+-- Dump completed on 2024-06-08 20:56:31
