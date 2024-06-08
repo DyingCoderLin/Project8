@@ -6,8 +6,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
 import org.example.backend.model.ResponseAI;
+import org.example.backend.model.User;
 import org.example.backend.service.AIService;
+import org.example.backend.service.EventTableService;
 import org.example.backend.service.MyUtils;
+import org.example.backend.service.UserService;
 import org.slf4j.Logger;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.prompt.Prompt;
@@ -23,7 +26,7 @@ public class AIController {
 
     private String head = "提取信息,如果无法识别则为设置为\"\"空字符串，一定按照json格式返回。每天是每周加上星期1、星期2、星期3、星期4、星期5、星期6、星期7全都要。\n" +
             "\"type\"（数字，新建课程为0，新建日程为1，切换工作表为2，工作表创建为3，删除课程或日程为4，删除工作表为5，没有匹配上为-1），\n" +
-            "\"eventName\"（字符串）、\"eventLocation\"（字符串）、\"weekRepeat\"（字符串，仅为\"每周\"、\"单周\"、\"双周\"、\"本周\"、\"下周\"、\"\"）、\"week\"（数字的List，表示第几周有课）、\"date\"（1-7数字，星期1-星期7）、\"startTime\"（字符串\"xx:xx:xx\",时分秒，开始时间，如果没有提到就为空字符串）、\"endTime\"（字符串\"xx:xx:xx\",时分秒，结束时间，如果没有提到就为空字符串）、\"startTimeNumber\"（数字，开始节课）、\"endTimeNumber\"（数字，结束节课），\n" +
+            "\"eventName\"（字符串）、\"eventLocation\"（字符串）、\"weekRepeat\"（字符串，仅为\"每周\"、\"单周\"、\"双周\"、\"本周\"、\"下周\"、\"\",优先\"\"）、\"week\"（数字的List，表示第几周有课）、\"date\"（1-7数字，星期1-星期7）、\"startTime\"（字符串\"xx:xx:xx\",时分秒，开始时间，如果没有提到就为空字符串）、\"endTime\"（字符串\"xx:xx:xx\",时分秒，结束时间，如果没有提到就为空字符串）、\"startTimeNumber\"（数字，开始节课）、\"endTimeNumber\"（数字，结束节课），\n" +
             "\"tableName\"（工作表名）、\"font\"（字符串，仅为\"楷体\"、\"宋体\"、\"幼圆\"、\"\"）、\"weekAmount\"（数字，这个工作表有几周）\n" +
             "如果没有匹配上，按照如下json格式返回。\n" +
             "{\n" +
@@ -101,6 +104,11 @@ public class AIController {
     private ObjectMapper objectMapper;
     @Autowired
     private AIService aiService;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private EventTableService eventTableService;
+
     @PostMapping("/Ai/chat1")
     public ResponseAI chat1(@RequestHeader(value = "Cookie") String cookie,
                             @RequestBody String str) throws JsonProcessingException
@@ -109,6 +117,7 @@ public class AIController {
         String[] cookieInfo = MyUtils.getCookieInfo(cookie);
         String userID = cookieInfo[0];
         Integer tableID = Integer.parseInt(cookieInfo[1]);
+        User user = userService.getUserByUserID(userID);
         System.out.println(str);
         try {
             String called = openAiChatModel.call(head + str);
@@ -132,16 +141,16 @@ public class AIController {
                     case 2:
                         System.out.println("切换工作表");
                         String tableName = jsonNode.get("tableName").asText();
-                        return aiService.switchTable(tableName);
+                        return aiService.switchTable(tableName,user);
                     case 3:
                         System.out.println("工作表创建");
-                        return aiService.createTable(jsonNode);
+                        return aiService.createTable(jsonNode,user);
                     case 4:
                         System.out.println("删除课程或日程");
-                        return aiService.deleteEvent(jsonNode);
+                        return aiService.deleteEvent(jsonNode,eventTableService.getByTableID(tableID));
                     case 5:
                         System.out.println("删除工作表");
-                        return aiService.deleteTable(jsonNode);
+                        return aiService.deleteTable(jsonNode,user);
                     default:
                         System.out.println("无法识别");
                         return aiService.defaultSetting();

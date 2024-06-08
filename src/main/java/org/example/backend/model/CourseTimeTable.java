@@ -16,7 +16,7 @@ public class CourseTimeTable {
     @Column(name = "number")
     private Integer courseNumber;
 
-    @OneToOne(fetch = FetchType.EAGER,cascade = CascadeType.REMOVE)
+    @OneToOne(fetch = FetchType.EAGER , cascade = CascadeType.REMOVE)
     @JoinColumn(name = "eventtable_id")
     private EventTable eventTable;
 

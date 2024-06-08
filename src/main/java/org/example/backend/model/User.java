@@ -32,7 +32,7 @@ public class User {
     @Column(name = "is_first_login")
     private boolean isFirstLogin;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     private Set<EventTable> eventTables;
 
     @OneToMany(mappedBy = "changeTableUser", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)

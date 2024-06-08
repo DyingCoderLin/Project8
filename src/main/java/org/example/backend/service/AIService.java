@@ -5,14 +5,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.Data;
-import org.example.backend.model.Event;
-import org.example.backend.model.EventTable;
-import org.example.backend.model.ResponseAI;
+import org.example.backend.model.*;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.example.backend.model.DayRepeat;
 
+import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
 import java.util.Set;
 import java.sql.Date;
 import java.util.ArrayList;
@@ -31,53 +30,161 @@ public class AIService {
 
     @Data
     public class DataforEvent{
+        private Integer eventID;
         private String eventName;
         private String eventLocation;
-        private List<Integer> week;
+//        private List<Integer> week;
+        private String weekRepeat;
         private List<DayRepeat> dayRepeat;
+        private String courseCode;
+        private Boolean isDirectlySave;
+        private Boolean isImportant;
+        private Boolean type;
+        private String eventDate;
+        private String timeNum;
+        private Integer dayRepeatNum;
+        private String endTime;
+        private String startTime;
 
         public DataforEvent() {
-            week = new ArrayList<>();
-            dayRepeat = new ArrayList<>();
+            type = false;
+            isDirectlySave = false;
+            isImportant = false;
+            dayRepeatNum = 0;
+            endTime = "";
+            startTime = "";
+//            week = new ArrayList<>();
+            dayRepeat = null;
+            eventID = 0;
+            eventName = "";
+            eventLocation = "";
+            courseCode = "";
+            //先把weekRepeat默认的null清空
+            weekRepeat = "";
+
+            for(int i = 0; i < 20;i++){
+                weekRepeat += "0";
+            }
+            System.out.println(weekRepeat);
+//            Date nowDate = new Date(System.currentTimeMillis());
+//            LocalDate firstDay = nowDate.toLocalDate();
+//            firstDay = firstDay.with(TemporalAdjusters.previousOrSame(java.time.DayOfWeek.MONDAY));
+            eventDate = "";
         }
 
-        // setters
-        public void setEventName(String eventName) {
-            this.eventName = eventName;
-        }
-        public void setEventLocation(String eventLocation) {
-            this.eventLocation = eventLocation;
-        }
-        public void setWeek(List<Integer> week) {
-            this.week = week;
-        }
-        public void setDayRepeat(List<DayRepeat> dayRepeat) {
-            this.dayRepeat = dayRepeat;
-        }
         public void addDayRepeatforCourse(JsonNode dayRepeat) {
+            //如果dayRepeat未开辟空间，则开辟
+            if(this.dayRepeat == null) {
+                this.dayRepeat = new ArrayList<>();
+            }
+            Date nowDate = new Date(System.currentTimeMillis());
+            LocalDate firstDay = nowDate.toLocalDate();
+            int date = dayRepeat.get("date").asInt();
+            switch (date){
+                case 1:
+                    firstDay = firstDay.with(TemporalAdjusters.previousOrSame(java.time.DayOfWeek.MONDAY));
+                    break;
+                case 2:
+                    firstDay = firstDay.with(TemporalAdjusters.previousOrSame(java.time.DayOfWeek.TUESDAY));
+                    break;
+                case 3:
+                    firstDay = firstDay.with(TemporalAdjusters.previousOrSame(java.time.DayOfWeek.WEDNESDAY));
+                    break;
+                case 4:
+                    firstDay = firstDay.with(TemporalAdjusters.previousOrSame(java.time.DayOfWeek.THURSDAY));
+                    break;
+                case 5:
+                    firstDay = firstDay.with(TemporalAdjusters.previousOrSame(java.time.DayOfWeek.FRIDAY));
+                    break;
+                case 6:
+                    firstDay = firstDay.with(TemporalAdjusters.previousOrSame(java.time.DayOfWeek.SATURDAY));
+                    break;
+                case 7:
+                    firstDay = firstDay.with(TemporalAdjusters.previousOrSame(java.time.DayOfWeek.SUNDAY));
+                    break;
+                default:
+                    break;
+            }
+            //转回Date
+            Date firstday = Date.valueOf(firstDay);
+            eventDate = MyUtils.dateToString(firstday);
             DayRepeat newDayRepeat = new DayRepeat();
-            newDayRepeat.setDate(dayRepeat.get("date").asInt());
-            newDayRepeat.setStartTimeNumber(dayRepeat.get("startTimeNumber").asInt());
-            newDayRepeat.setEndTimeNumber(dayRepeat.get("endTimeNumber").asInt());
+            newDayRepeat.setDate(date);
+            int startTimeNumber = dayRepeat.get("startTimeNumber").asInt();
+            int endTimeNumber = dayRepeat.get("endTimeNumber").asInt();
+            // 如果starttimenumber为1，endTimeNumber为4，则将timeNum写为"1,2,3,4"
+            timeNum = "";
+            for(int i = startTimeNumber; i <= endTimeNumber; i++) {
+                if(i == endTimeNumber)
+                    timeNum += i;
+                else
+                    timeNum += i + ",";
+            }
+            newDayRepeat.setStartTimeNumber(startTimeNumber);
+            newDayRepeat.setEndTimeNumber(endTimeNumber);
+            newDayRepeat.setEndTime("");
+            newDayRepeat.setStartTime("");
             this.dayRepeat.add(newDayRepeat);
         }
+
         public void addDayRepeatforSchedule(JsonNode dayRepeat) {
+            if(this.dayRepeat == null) {
+                this.dayRepeat = new ArrayList<>();
+            }
+            Date nowDate = new Date(System.currentTimeMillis());
+            LocalDate firstDay = nowDate.toLocalDate();
+            int date = dayRepeat.get("date").asInt();
+            switch (date){
+                case 1:
+                    firstDay = firstDay.with(TemporalAdjusters.previousOrSame(java.time.DayOfWeek.MONDAY));
+                    break;
+                case 2:
+                    firstDay = firstDay.with(TemporalAdjusters.previousOrSame(java.time.DayOfWeek.TUESDAY));
+                    break;
+                case 3:
+                    firstDay = firstDay.with(TemporalAdjusters.previousOrSame(java.time.DayOfWeek.WEDNESDAY));
+                    break;
+                case 4:
+                    firstDay = firstDay.with(TemporalAdjusters.previousOrSame(java.time.DayOfWeek.THURSDAY));
+                    break;
+                case 5:
+                    firstDay = firstDay.with(TemporalAdjusters.previousOrSame(java.time.DayOfWeek.FRIDAY));
+                    break;
+                case 6:
+                    firstDay = firstDay.with(TemporalAdjusters.previousOrSame(java.time.DayOfWeek.SATURDAY));
+                    break;
+                case 7:
+                    firstDay = firstDay.with(TemporalAdjusters.previousOrSame(java.time.DayOfWeek.SUNDAY));
+                    break;
+                default:
+                    break;
+            }
+            //转回Date
+            Date firstday = Date.valueOf(firstDay);
+            eventDate = MyUtils.dateToString(firstday);
             DayRepeat newDayRepeat = new DayRepeat();
             newDayRepeat.setDate(dayRepeat.get("date").asInt());
-            newDayRepeat.setStartTime(dayRepeat.get("startTime").asText());
-            newDayRepeat.setEndTime(dayRepeat.get("endTime").asText());
+            timeNum = "";
+            String startTime = dayRepeat.get("startTime").asText();
+            String endTime = dayRepeat.get("endTime").asText();
+            newDayRepeat.setStartTime(startTime);
+            newDayRepeat.setEndTime(endTime);
+            this.startTime = startTime;
+            this.endTime = endTime;
+            newDayRepeat.setStartTimeNumber(0);
+            newDayRepeat.setEndTimeNumber(0);
             this.dayRepeat.add(newDayRepeat);
         }
         public void addWeek(Integer week) {
-            this.week.add(week);
+            if(week >= 0 && week < 20)
+            this.weekRepeat = this.weekRepeat.substring(0,week) + "1" + this.weekRepeat.substring(week+1);
         }
     }
+
     public ResponseAI newCourse(JsonNode jsonNode, Integer tableID) {
         Logger log = org.slf4j.LoggerFactory.getLogger(AIService.class);
         EventTable eventTable = eventTableService.getByTableID(tableID);
         String weekRepeat = jsonNode.get("weekRepeat").asText();
-        List<Integer> week = new ArrayList<>();
-
         //认为周数从0开始，到weekAmount-1
         log.info("weekRepeat: " + weekRepeat);
         DataforEvent data = new DataforEvent();
@@ -103,12 +210,14 @@ public class AIService {
             int weekNext = MyUtils.DateToWeekandDay(eventTable.getFirstDayDate(),todayDate)[0];
             data.addWeek(weekNext);
         } else {
+            log.info("no weekRepeat");
             weekRepeat = "";
             JsonNode weekNode = jsonNode.get("week");
             if(weekNode.isArray()){
+                log.info("weekNode is array");
                 for(JsonNode weekNumber : weekNode) {
                     log.info("weekNumber: " + weekNumber.asInt());
-                    data.addWeek(weekNumber.asInt());
+                    data.addWeek(weekNumber.asInt() - 1);
                 }
             }
         }
@@ -118,8 +227,16 @@ public class AIService {
         data.setEventLocation(eventLocation);
         JsonNode dayRepeat = jsonNode.get("dayRepeat");
         if(dayRepeat.isArray()) {
-            for(JsonNode dayRepeatNode : dayRepeat) {
-                data.addDayRepeatforCourse(dayRepeatNode);
+            if(dayRepeat.size() == 7) {
+                data.setDayRepeatNum(7);
+                for (JsonNode dayRepeatNode : dayRepeat) {
+                    data.addDayRepeatforCourse(dayRepeatNode);
+                }
+            }
+            else {
+                // 只将第一个元素加入
+                data.setDayRepeatNum(1);
+                data.addDayRepeatforCourse(dayRepeat.get(0));
             }
         }
         return new ResponseAI<DataforEvent>(0,data);
@@ -129,7 +246,7 @@ public class AIService {
         Logger log = org.slf4j.LoggerFactory.getLogger(AIService.class);
         EventTable eventTable = eventTableService.getByTableID(tableID);
         String weekRepeat = jsonNode.get("weekRepeat").asText();
-        List<Integer> week = new ArrayList<>();
+//        List<Integer> week = new ArrayList<>();
 
         //认为周数从0开始，到weekAmount-1
         log.info("weekRepeat: " + weekRepeat);
@@ -161,7 +278,7 @@ public class AIService {
             if(weekNode.isArray()){
                 for(JsonNode weekNumber : weekNode) {
                     log.info("weekNumber: " + weekNumber.asInt());
-                    data.addWeek(weekNumber.asInt());
+                    data.addWeek(weekNumber.asInt()-1);
                 }
             }
         }
@@ -169,16 +286,25 @@ public class AIService {
         String eventLocation = jsonNode.get("eventLocation").asText();
         data.setEventName(eventName);
         data.setEventLocation(eventLocation);
+        data.setType(true);
         JsonNode dayRepeat = jsonNode.get("dayRepeat");
         if(dayRepeat.isArray()) {
-            for(JsonNode dayRepeatNode : dayRepeat) {
-                data.addDayRepeatforSchedule(dayRepeatNode);
+            if(dayRepeat.size() == 7) {
+                data.setDayRepeatNum(7);
+                for (JsonNode dayRepeatNode : dayRepeat) {
+                    data.addDayRepeatforSchedule(dayRepeatNode);
+                }
+            }
+            else {
+                // 只将第一个元素加入
+                data.setDayRepeatNum(1);
+                data.addDayRepeatforSchedule(dayRepeat.get(0));
             }
         }
         return new ResponseAI<DataforEvent>(0,data);
     }
 
-    public ResponseAI switchTable(String tableName) {
+    public ResponseAI switchTable(String tableName,User user) {
         @Data
         class DataForSwitchTable {
             private Integer tableID;
@@ -193,7 +319,7 @@ public class AIService {
             }
         }
         DataForSwitchTable data = new DataForSwitchTable();
-        List<EventTable> eventTabless = eventTableService.findByTableNameContaining(tableName);
+        List<EventTable> eventTabless = eventTableService.findByTableNameContaining(tableName,user);
         if(eventTabless.isEmpty()) {
             return new ResponseAI<DataForSwitchTable>(2,data);
         }
@@ -205,7 +331,7 @@ public class AIService {
         return new ResponseAI<DataForSwitchTable>(2,data);
     }
 
-    public ResponseAI createTable(JsonNode jsonNode) {
+    public ResponseAI createTable(JsonNode jsonNode, User user) {
         @Data
         class DataForCreateTable {
             private String tableName;
@@ -227,7 +353,7 @@ public class AIService {
         return new ResponseAI<DataForCreateTable>(3,data);
     }
 
-    public ResponseAI deleteEvent(JsonNode jsonNode) {
+    public ResponseAI deleteEvent(JsonNode jsonNode,EventTable eventTable) {
         @Data
         class DataForDeleteEvent {
             private Integer eventID;
@@ -238,7 +364,7 @@ public class AIService {
             }
         }
         String eventName = jsonNode.get("eventName").asText();
-        List<Event> events = eventService.findByEventNameContaining(eventName);
+        List<Event> events = eventService.findByEventNameContaining(eventName,eventTable);
         DataForDeleteEvent data;
         if(events.isEmpty()) {
             data = new DataForDeleteEvent(0,"没有找到您要删除的日程或课程：\""+eventName+"\"。");
@@ -256,7 +382,7 @@ public class AIService {
         return new ResponseAI<DataForDeleteEvent>(4,data);
     }
 
-    public ResponseAI deleteTable(JsonNode jsonNode) {
+    public ResponseAI deleteTable(JsonNode jsonNode,User user) {
         @Data
         class DataForDeleteTable {
             private Integer tableID;
@@ -267,7 +393,7 @@ public class AIService {
             }
         }
         String tableName = jsonNode.get("tableName").asText();
-        List<EventTable> eventTables = eventTableService.findByTableNameContaining(tableName);
+        List<EventTable> eventTables = eventTableService.findByTableNameContaining(tableName,user);
         if(eventTables.isEmpty()) {
             DataForDeleteTable data = new DataForDeleteTable(0,"没有找到您要删除的工作表：\""+tableName+"\"。");
             return new ResponseAI(5,data);

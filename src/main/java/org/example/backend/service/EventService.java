@@ -77,8 +77,8 @@ public class EventService {
         eventRepository.deleteByEventID(eventID);
     }
 
-    public List<Event> findByEventNameContaining(String eventName) {
-        return eventRepository.findByEventNameContaining(eventName);
+    public List<Event> findByEventNameContaining(String eventName, EventTable eventTable) {
+        return eventRepository.findByEventNameContainingAndEventTable(eventName, eventTable);
     }
 
     public void updateTime(Event event,CourseTimeTable courseTimeTable){

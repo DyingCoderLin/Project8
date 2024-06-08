@@ -1,13 +1,35 @@
 package org.example.backend.controllers;
 
 import jakarta.persistence.EntityManager;
+import kong.unirest.Unirest;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.example.backend.service.*;
 import org.example.backend.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import kong.unirest.HttpResponse;
+import kong.unirest.JsonNode;
+import kong.unirest.Unirest;
+import kong.unirest.UnirestException;
+import org.apache.el.parser.ParseException;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+import org.springframework.web.bind.annotation.*;
 
+import javax.naming.AuthenticationException;
+import java.io.IOException;
 import java.util.*;
 
 @RestController
@@ -29,6 +51,9 @@ public class EventController {
 
     @Autowired
     private EventTimeService eventTimeService;
+
+    @Autowired
+    private EventTableService eventTableService;
 
     //不需要返回值，因为修改后前端为整个重新load来获取当天的所有课程
     @PostMapping("/changeEventInfo")
@@ -284,6 +309,224 @@ public class EventController {
         ResponsetoGetOneCourseNote responsetoGetOneCourseNote = new ResponsetoGetOneCourseNote();
         responsetoGetOneCourseNote.setNote(event.getNote());
         return responsetoGetOneCourseNote;
+    }
+
+    @GetMapping("/RequestLesson")
+    public void requestLesson(@RequestHeader(value = "Cookie") String cookie,
+                              @RequestParam String accessToken) throws AuthenticationException {
+        String[] cookieInfo = MyUtils.getCookieInfo(cookie);
+        String userID = cookieInfo[0];
+        Integer tableID = Integer.parseInt(cookieInfo[1]);
+        User user = userService.getUserByUserID(userID);
+        EventTable eventTable = user.getEventTableByTableID(tableID);
+        if(eventTable.getDoneImport()){
+            //告知前端已经导入过课程表
+            return;
+        }
+        System.out.println("进入Lesson成功");
+        System.out.println("Cookie:" + cookie);
+//        Unirest.config().connectTimeout(6000).socketTimeout(6000); // 设置合理的超时
+        List<EventDTO> events;
+        try {
+            //可以根据学期修改
+            String term = "2023-2024-2";
+
+            HttpResponse<String> response2 = Unirest.get("https://api.sjtu.edu.cn/v1/me/lessons/" + term + "?access_token=" + accessToken + "&&").asString();
+            JSONObject responseBody2 = new JSONObject(response2.getBody());
+
+//            System.out.println("进入API成功");
+
+            // 检查response
+//            System.out.println(responseBody2);
+//            System.out.println(responseBody2.getJSONArray("entities").get(0));
+
+            // 课程
+            Object classes = responseBody2.get("entities");
+            classes.toString();
+            System.out.println(classes);
+
+            events = new ArrayList<>();
+            List<Integer> date = new ArrayList<>();
+            List<String> weekRepeat = new ArrayList<>();
+            List<Integer> period = new ArrayList<>();
+
+            for (int i = 0; i < ((JSONArray) classes).length(); i++) {
+                List<EventDTO> event = new ArrayList<>();
+                List<DayRepeat> dayRepeat = new ArrayList<>();
+                DayRepeat day = new DayRepeat();
+                EventDTO event1 = new EventDTO();
+
+                JSONObject classInfo = ((JSONArray) classes).getJSONObject(i);
+//               System.out.println(classInfo);
+
+                //设置 courseID 和 courseName
+                JSONObject course = (JSONObject) classInfo.get("course");
+//                 System.out.println(course);
+//                System.out.println(course.getString("code"));
+//                System.out.println(course.getString("name"));
+//                System.out.println(course.getString("kind"));
+                event1.setCourseCode(course.getString("code"));
+//                System.out.println(event1.getCourseCode());
+                event1.setEventName(course.getString("name"));
+//                System.out.println(event1.getEventName());
+
+                //设置 courseLocation 和 weekRepeat
+                Object classTime = classInfo.get("classes");
+                classTime.toString();
+
+                for (int j = 0; j < ((JSONArray) classTime).length(); j++) {
+                    JSONObject classTimeInfo = ((JSONArray) classTime).getJSONObject(j);
+
+                    JSONObject classSchedule = (JSONObject) classTimeInfo.get("schedule");
+
+                    if (!date.contains(classSchedule.getInt("day"))) {
+                        date.add(classSchedule.getInt("day"));
+                    }
+                }
+
+
+                for (int c = 0; c < date.size(); c++) {
+
+                    String week = "00000000000000000000";
+
+                    for (int j = 0; j < ((JSONArray) classTime).length(); j++) {
+                        JSONObject classTimeInfo = ((JSONArray) classTime).getJSONObject(j);
+
+                        JSONObject classSchedule = (JSONObject) classTimeInfo.get("schedule");
+
+                        int week1 = (int) classSchedule.get("week");
+                        if (classSchedule.get("day") == date.get(c)) {
+                            if (week1 == 0) {
+                                String tmp = "1" + week.substring(1);
+                                week = tmp;
+                            } else {
+                                String tmp = week.substring(0, week1) + "1" + week.substring(week1 + 1);
+                                week = tmp;
+                            }
+                        }
+                    }
+
+                    weekRepeat.add(week);
+                }
+
+
+                for (int c = 0; c < date.size(); c++) {
+                    period.clear();
+                    for (int j = 0; j < ((JSONArray) classTime).length(); j++) {
+                        JSONObject classTimeInfo = ((JSONArray) classTime).getJSONObject(j);
+
+                        JSONObject classSchedule = (JSONObject) classTimeInfo.get("schedule");
+                        int pp = (int) classSchedule.get("period");
+                        if (classSchedule.get("day") == date.get(c)) {
+                            period.add(pp);
+                        }
+                    }
+                    Integer s = 1000;
+                    Integer e = 0;
+                    for (Integer jj : period) {
+                        if (jj < s)
+                            s = jj;
+                        if (jj > e)
+                            e = jj;
+                    }
+                    day.setDate(date.get(c));
+                    day.setStartTimeNumber(s);
+                    day.setEndTimeNumber(e);
+
+                    dayRepeat.add(day);
+
+                    event1.setDayRepeat(dayRepeat);
+                    event1.setWeekRepeat(weekRepeat.get(c));
+                    for (int j = 0; j < ((JSONArray) classTime).length(); j++) {
+                        JSONObject classTimeInfo = ((JSONArray) classTime).getJSONObject(j);
+
+                        JSONObject classClassroom = (JSONObject) classTimeInfo.get("classroom");
+
+                        if (event1.getEventLocation() == null) {
+                            event1.setEventLocation(classClassroom.getString("name"));
+                        } else if (!event1.getEventLocation().contains(classClassroom.getString("name"))) {
+                            event1.setEventLocation(event1.getEventLocation() + " " + classClassroom.getString("name"));
+                        }
+
+                    }
+                    event.add(event1);
+                }
+
+//               System.out.println(event.getEventLocation());
+                //需要把event调好放进去，然后开始下一门课
+                for (int j = 0; j < event.size(); j++) {
+                    events.add(event.get(j));
+                }
+                date.clear();
+                weekRepeat.clear();
+                event.clear();
+            }
+            for (EventDTO e : events) {
+                System.out.println(e.getEventName());
+            }
+        } catch (UnirestException | JSONException e) {
+            throw new AuthenticationException("Request Lesson failed");
+        }
+
+        Logger log = LoggerFactory.getLogger(EventController.class);
+        eventTable.setDoneImport(true);
+        eventTableService.saveEventTable(eventTable);
+        log.info("user"+user.getUserID());
+        log.info("TableID: " + tableID);
+        log.info("eventTable: " + eventTable.getTableName());
+        for (EventDTO eventDTO : events) {
+            log.info(String.valueOf(eventDTO.getDayRepeat().size()));
+            boolean type = false;
+            boolean isImportant = false;
+            Integer eventID = 0;
+            String eventName = eventDTO.getEventName();
+            String eventLocation = eventDTO.getEventLocation();
+            String courseCode = eventDTO.getCourseCode();
+            String weekRepeat = eventDTO.getWeekRepeat();
+            if (weekRepeat.length() < 20) {
+                for (int i = weekRepeat.length(); i < 20; i++) {
+                    weekRepeat += '0';
+                }
+            }
+            List<DayRepeat> dayRepeats = eventDTO.getDayRepeat();
+            int date;
+            int startTimeNumber = 0;
+            int endTimeNumber = 0;
+            String startTime = null;
+            String endTime = null;
+            Event event = null;
+            //将dayRepeats读取出来，后续存入eventtime
+            //要先找到对应的event，如果是0则新建，否则找到对应的event
+            event = new Event();
+            event.setType(type);
+            event.setEventName(eventName);
+            event.setEventLocation(eventLocation);
+            event.setCourseCode(courseCode);
+            event.setWeek(weekRepeat);
+            event.setIsImportant(isImportant);
+            event.setEventTable(eventTable);
+            eventService.saveEvent(event);
+            //遍历dayRepeats，把一个Dayrepeat对应存一列eventtime并保存到数据库中
+            for (DayRepeat dayRepeat : dayRepeats) {
+                EventTime eventTime = new EventTime();
+                eventTime.setDate(dayRepeat.getDate());
+                startTimeNumber = dayRepeat.getStartTimeNumber();
+                endTimeNumber = dayRepeat.getEndTimeNumber();
+                startTime = dayRepeat.getStartTime();
+                endTime = dayRepeat.getEndTime();
+                //先存入节数，再根据节数算出对应的课程时间，将所有内容都进行存入
+                eventTime.setStartTimeNumber(startTimeNumber);
+                eventTime.setEndTimeNumber(endTimeNumber);
+                //根据courseTimeTable算出对应的课程时间
+                String[] bothTime = MyUtils.getBothTimeByTwoNumber(eventTable, startTimeNumber, endTimeNumber, courseTimeTableService);
+                startTime = bothTime[0];
+                endTime = bothTime[1];
+                eventTime.setStartTime(startTime);
+                eventTime.setEndTime(endTime);
+                eventTime.setEvent(event);
+                eventTimeService.save(eventTime);
+            }
+        }
     }
 }
 

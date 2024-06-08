@@ -38,8 +38,8 @@ public class EventTableService {
         return eventTableRepository.findByUser(user);
     }
 
-    public List<EventTable> findByTableNameContaining(String tableName) {
-        return eventTableRepository.findByTableNameContaining(tableName);
+    public List<EventTable> findByTableNameContaining(String tableName, User user) {
+        return eventTableRepository.findByTableNameContainingAndUser(tableName, user);
     }
 
     public void saveEventTable(EventTable eventTable) {

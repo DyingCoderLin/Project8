@@ -125,7 +125,8 @@ public class MyUtils {
         boolean isHaveSchedule = false;
         boolean isHaveCourse = false;
         boolean isImportant = false;
-        boolean isChanged = false;
+        boolean rest = false;
+        boolean work = false;
         Date replaceDate = null;
         log.info("currentDate:" + currentDate+" firstDayDate:"+firstDayDate);
         //如果currentDate小于firstDayDate，则直接返回false
@@ -137,14 +138,19 @@ public class MyUtils {
 //                    if (changeTable != null) {
                         if (changeTable.getModifiedDate().equals(currentDate)) {
                             replaceDate = changeTable.getReplaceDate();
-                            isChanged = true;
+                            if (replaceDate == null) {
+                                rest = true;
+                            } else {
+                                work = true;
+                            }
+//                            isChanged = true;
                         }
 //                    }
                 }
             }
-            //先获取这是第几周的第几天
-            if(!isChanged || (isChanged && replaceDate != null)) {
-                if(isChanged) {
+            //先获取这是第几周的第几天,这种情况是调休上班
+            if((!rest && !work) || work) {
+                if(work) {
                     //如果调休了，那么要显示date当天的日程和replaceDate当天的课程
                     Integer[] weekandday0 = MyUtils.DateToWeekandDay(firstDayDate, currentDate);
                     Integer weekforDate = weekandday0[0];
@@ -240,12 +246,23 @@ public class MyUtils {
                 }
             }
         }
-        boolean[] booleans = new boolean[4];
+        boolean[] booleans = new boolean[5];
         booleans[0] = isHaveSchedule;
         booleans[1] = isHaveCourse;
         booleans[2] = isImportant;
-        booleans[3] = isChanged;
+        booleans[3] = rest;
+        booleans[4] = work;
         return booleans;
+    }
+
+    public static String completeDate(String startTime,Date date){
+        //将日期补全
+        //现在我的starttime是08:00:00的格式，我要加上我的date，变成"2024-06-07T13:45:30"的格式
+        String dateStr = date.toString();
+        String[] time = startTime.split(":");
+        String[] dateArray = dateStr.split("-");
+        String completeDate = dateArray[0] + "-" + dateArray[1] + "-" + dateArray[2] + "T" + time[0] + ":" + time[1] + ":00";
+        return completeDate;
     }
 
     public static String[] getBothTimeByTwoNumber(EventTable eventTable,Integer startTimeNumber,Integer endTimeNumber,CourseTimeTableService courseTimeTableService){

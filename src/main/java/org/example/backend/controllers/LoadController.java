@@ -111,6 +111,7 @@ public class LoadController {
         Integer tableID = Integer.parseInt(cookieInfo[1]);
         //获取的date为2024-2-14格式
         Date date = MyUtils.stringToDate((String) requestBody.get("date"));
+        log.info("date:" + date);
         boolean isChanged = false;//标志是否调休
         User user = userService.getUserByUserID(userID);
         EventTable eventTable = user.getEventTableByTableID(tableID);
@@ -229,7 +230,8 @@ public class LoadController {
         boolean isHaveSchedule = false;
         boolean isHaveCourse = false;
         boolean isImportant = false;
-        boolean isChanged = false;
+        boolean rest = false;
+        boolean work = false;
         String[] cookieInfo = MyUtils.getCookieInfo(cookie);
         String userID = cookieInfo[0];
         Integer tableID = Integer.parseInt(cookieInfo[1]);
@@ -263,11 +265,169 @@ public class LoadController {
             isHaveSchedule = bools[0];
             isHaveCourse = bools[1];
             isImportant = bools[2];
-            isChanged = bools[3];
-            response.addDayInformation(isHaveSchedule,isHaveCourse,isImportant,isChanged);
+//            isChanged = bools[3];
+            rest = bools[3];
+            work = bools[4];
+            response.addDayInformation(isHaveSchedule,isHaveCourse,isImportant,rest,work);
             calendar.add(Calendar.DAY_OF_MONTH, 1);
         }
         response.setCode(1);
         return response;
     }
+
+    @GetMapping("/loadNotification")
+    public ResponsetoloadNotification loadNotification(@RequestHeader(value = "Cookie") String cookie) {
+        final Logger log = LoggerFactory.getLogger(LoadController.class);
+        log.info("receive loadNotification");
+        String[] cookieInfo = MyUtils.getCookieInfo(cookie);
+        String userID = cookieInfo[0];
+        Integer tableID = Integer.parseInt(cookieInfo[1]);
+        User user = userService.getUserByUserID(userID);
+        EventTable eventTable = user.getEventTableByTableID(tableID);
+        ResponsetoloadNotification response = new ResponsetoloadNotification();
+        // 返回本机当前日期
+        Date date = new Date(System.currentTimeMillis());
+        log.info("date:" + date);
+        boolean isChanged = false;//标志是否调休
+        Set<Event> events = eventTable.getEvents();
+        //在读取前要先检验是否被调休
+        Set<ChangeTable> changeTables = user.getChangeTables();
+        Date replaceDate = null;
+        //如果被调休则替换日期,但要特殊处理直接放假的天，正常显示日程但不显示课程
+        if(!changeTables.isEmpty()) {
+            for(ChangeTable changeTable : changeTables) {
+                if (changeTable != null) {
+                    log.info("changeTable.getModifiedDate():" + changeTable.getModifiedDate() + " date:" + date);
+                    if (changeTable.getModifiedDate().toString().equals(date.toString())) {
+                        log.info("这一天被调休了");
+                        replaceDate = changeTable.getReplaceDate();
+                        isChanged = true;
+                    }
+                }
+            }
+        }
+        log.info("ReplaceDate:" + replaceDate);
+        //先获取这是第几周的第几天
+        if(!isChanged || (isChanged && replaceDate != null)) {
+            if(isChanged) {
+                log.info("这一天被调休了，只有当天的日程");
+                //如果调休了，那么要显示date当天的日程和replaceDate当天的课程
+                Integer[] weekandday0 = MyUtils.DateToWeekandDay(eventTable.getFirstDayDate(), date);
+                Integer weekforDate = weekandday0[0];
+                Integer dayforDate = weekandday0[1];
+                Integer[] weekandday1 = MyUtils.DateToWeekandDay(eventTable.getFirstDayDate(), replaceDate);
+                Integer weekforReplaceDate = weekandday1[0];
+                Integer dayforReplaceDate = weekandday1[1];
+                //遍历所有事件
+                for (Event e : events) {
+                    //先看时间在两个时间点是否有，然后再看它的属性
+                    //weekforDate只看日程
+                    if (e.getType() && e.getWeek().charAt(weekforDate - 1) == '1') {
+                        log.info("这是当天的日程"+e.getEventName());
+                        Set<EventTime> eventTimes = e.getEventTimes();
+                        for (EventTime et : eventTimes) {
+                            if (et.getDate().equals(dayforDate)) {
+                                //将这个事件的信息传到前端
+                                //现在我的starttime是08:00:00的格式，我要加上我的date，变成"2024-06-07T13:45:30"的格式
+                                String startTime = MyUtils.completeDate(et.getStartTime(), date);
+                                response.addNoteTime(e.getEventName(), startTime);
+//                                response.setEventArr(e, et);
+                            }
+                        }
+                    }
+                    if (!e.getType() && e.getWeek().charAt(weekforReplaceDate - 1) == '1') {
+                        Set<EventTime> eventTimes = e.getEventTimes();
+                        for (EventTime et : eventTimes) {
+                            if (et.getDate().equals(dayforReplaceDate)) {
+                                //将这个事件的信息传到前端
+                                String startTime = MyUtils.completeDate(et.getStartTime(), date);
+                                response.addNoteTime(e.getEventName(), startTime);
+//                                response.setEventArr(e, et);
+                            }
+                        }
+                    }
+                    //其他情况都不会认为是当天的事件
+                }
+            }
+            else {
+                Integer[] weekandday = MyUtils.DateToWeekandDay(eventTable.getFirstDayDate(), date);
+                Integer week = weekandday[0];
+                Integer day = weekandday[1];
+//                response.setWeeknow(week);
+                log.info("week:" + week + " day:" + day);
+                //获取这一天的所有事件
+                for (Event e : events) {
+                    //先看当周是否空出
+                    if (e.getWeek().charAt(week - 1) == '0') {
+                        continue;
+                    }
+                    //如果当周空出，则查看day是否匹配
+                    else {
+                        Set<EventTime> eventTimes = e.getEventTimes();
+                        for (EventTime et : eventTimes) {
+                            if (et.getDate().equals(day)) {
+                                //将这个事件的信息传到前端
+                                String startTime = MyUtils.completeDate(et.getStartTime(), date);
+                                response.addNoteTime(e.getEventName(), startTime);
+//                                response.setEventArr(e, et);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        else {
+            log.info("这一天被放假了，只有当天的日程");
+            Integer[] weekandday = MyUtils.DateToWeekandDay(eventTable.getFirstDayDate(), date);
+            Integer week = weekandday[0];
+            Integer day = weekandday[1];
+//            response.setWeeknow(week);
+            log.info("week:" + week + " day:" + day);
+            //获取这一天的所有事件
+            for (Event e : events) {
+                //只显示在当天的日程
+                if (!e.getType() || e.getWeek().charAt(week - 1) == '0') {
+                    continue;
+                }
+                //如果当周空出，则查看day是否匹配
+                else {
+                    Set<EventTime> eventTimes = e.getEventTimes();
+                    for (EventTime et : eventTimes) {
+                        if (et.getDate().equals(day)) {
+                            //将这个事件的信息传到前端
+                            String startTime = MyUtils.completeDate(et.getStartTime(), date);
+                            response.addNoteTime(e.getEventName(), startTime);
+//                            response.setEventArr(e, et);
+                        }
+                    }
+                }
+            }
+        }
+        return response;
+    }
+
+
+    @GetMapping("/export")
+    public ResponsetoExport export(@RequestHeader(value = "Cookie") String cookie) {
+        final Logger log = LoggerFactory.getLogger(LoadController.class);
+        log.info("receive export");
+        String[] cookieInfo = MyUtils.getCookieInfo(cookie);
+        String userID = cookieInfo[0];
+        Integer tableID = Integer.parseInt(cookieInfo[1]);
+        User user = userService.getUserByUserID(userID);
+        EventTable eventTable = user.getEventTableByTableID(tableID);
+        Set<Event> events = eventTable.getEvents();
+        //遍历所有事件，将它们的第一个eventtime和event作为参数加入到response中
+        ResponsetoExport response = new ResponsetoExport();
+        for(Event e : events){
+            if(e.getType())
+                continue;
+            Set<EventTime> eventTimes = e.getEventTimes();
+            for(EventTime et : eventTimes){
+                response.addCourses(e,et);
+            }
+        }
+        return response;
+    }
+
 }

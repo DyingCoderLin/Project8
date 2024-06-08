@@ -7,6 +7,17 @@ import org.example.backend.service.*;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import jakarta.servlet.http.HttpSession;
+import kong.unirest.HttpResponse;
+import kong.unirest.Unirest;
+import kong.unirest.UnirestException;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.naming.AuthenticationException;
 
 import java.util.Map;
 import java.util.Set;
@@ -177,4 +188,63 @@ public class UserController {
 //        response.setData(user.getUserName(), user.getUserGender(), user.getUserLocation(), user.getAvatarURL());
         return response;
     }
+
+//    private final String client_id = "ov3SLrO4HyZSELxcHiqS";
+//    private final String client_secret = "B9919DDA3BD9FBF7ADB9F84F67920D8CB6528620B9586D1C";
+//    private final String redirect_uri = "http://localhost:3000/callback";
+//    private String refreshToken;
+//    private String accessToken;
+//
+//    @GetMapping("/RequestAccessToken")
+//    public String requestAccessToken(@RequestParam String code) throws AuthenticationException {
+//        System.out.println(code);
+//        Unirest.config().connectTimeout(6000).socketTimeout(6000); // 设置合理的超时
+//        try {
+//            HttpResponse<String> response = Unirest.post("https://jaccount.sjtu.edu.cn/oauth2/token")
+//                    .header("User-Agent", "Apifox/1.0.0 (https://apifox.com)")
+//                    .header("Accept", "*/* ")
+//                    .header("Connection", "keep-alive")
+//                    .header("Host", "jaccount.sjtu.edu.cn")
+//                    .header("Content-Type", "application/x-www-form-urlencoded")
+//                    .header("Authorization","Basic b3YzU0xyTzRIeVpTRUx4Y0hpcVM6Qjk5MTlEREEzQkQ5RkJGN0FEQjlGODRGNjc5MjBEOENCNjUyODYyMEI5NTg2RDFD")
+//                    .field("grant_type", "authorization_code")
+//                    .field("code", code)
+//                    .field("redirect_uri", redirect_uri) // 确保包含重定向URI
+//                    .field("client_id", client_id)
+//                    .field("client_secret", client_secret)
+//                    .asString();
+//
+//            JSONObject responseBody = new JSONObject(response.getBody());
+//            // 检查response
+//            System.out.println(responseBody);
+//            // 访问令牌码
+//            accessToken = responseBody.getString("access_token");
+//            // 刷新令牌码
+//            refreshToken = responseBody.getString("refresh_token");
+//            System.out.println(accessToken);
+//            System.out.println(refreshToken);
+//
+//            HttpResponse<String> response2 = Unirest.get("https://api.sjtu.edu.cn/v1/me/profile?access_token="+accessToken).asString();
+//            JSONObject responseBody2 = new JSONObject(response2.getBody());
+//
+//            // 检查response
+////            System.out.println(responseBody2);
+////            System.out.println(responseBody2.getJSONArray("entities").get(0));
+//            // 学号
+//            String codeValue = responseBody2.getJSONArray("entities")
+//                    .getJSONObject(0) // 使用 getJSONObject(0) 而不是 get(0)
+//                    .getString("code");
+//            System.out.println(codeValue);
+//            //拿到学号之后在寻找数据库中是否有这个学号，如果有则不创建对应新用户，如果没有则创建
+//            User user = userService.getUserByUserID(codeValue);
+//            if(user == null) {
+//                user = new User();
+//                user.setUserID(codeValue);
+//            }
+//            // 前端你们要啥你们自己封装一下
+//            return accessToken;
+//        } catch (UnirestException | JSONException e) {
+//            throw new AuthenticationException("Request access token failed");
+//        }
+//    }
 }

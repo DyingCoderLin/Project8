@@ -13,6 +13,6 @@ public interface EventTableRepository extends JpaRepository<EventTable, Integer>
     void deleteByTableID(Integer tableID);
     EventTable getByTableID(Integer tableID);
     List<EventTable> findByUser(User user);
-    List<EventTable> findByTableNameContaining(String tableName);
+    List<EventTable> findByTableNameContainingAndUser(String tableName,User user);
     long countByUser(User user);
 }

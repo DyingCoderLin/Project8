@@ -38,6 +38,9 @@ public class EventTable {
     @Column(name = "defaulttable")
     private boolean defaultTable;
 
+    @Column(name = "done_import")
+    private boolean doneImport;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "for_userid")
     private User user;
@@ -57,6 +60,7 @@ public class EventTable {
         this.firstDayDate = new Date(System.currentTimeMillis());
         this.weekAmount = 20;
         this.defaultTable = true;
+        this.doneImport = false;
     }
 
     public EventTable(Integer tableID,String tableName, String background, String font, String courseColor, String eventColor, Date firstDayDate, Integer weekAmount,boolean defaultTable) {
@@ -86,6 +90,7 @@ public class EventTable {
     public User getUser() { return user; }
     public boolean getDefaultTable() { return defaultTable; }
     public CourseTimeTable getCourseTimeTable() { return courseTimeTable; }
+    public boolean getDoneImport() { return doneImport; }
 
     // setters
     public void setTableID(Integer tableID) { this.tableID = tableID; }
@@ -103,6 +108,7 @@ public class EventTable {
     }
     public void setDefaultTable(boolean defaultTable) { this.defaultTable = defaultTable; }
     public void setCourseTimeTable(CourseTimeTable courseTimeTable) { this.courseTimeTable = courseTimeTable; }
+    public void setDoneImport(boolean doneImport) { this.doneImport = doneImport; }
 //    public void detach(){
 //        this.user.getEventTables().remove(this);
 //    }
