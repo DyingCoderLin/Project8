@@ -1,0 +1,188 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > UserService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">org.example.backend.service</a>
+</div>
+
+<h1>Coverage Summary for Class: UserService (org.example.backend.service)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">UserService</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (6/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    83.3%
+  </span>
+  <span class="absValue">
+    (5/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (23/23)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package org.example.backend.service;
+&nbsp;
+&nbsp;import org.example.backend.model.EventTable;
+&nbsp;import org.example.backend.model.User;
+&nbsp;import org.example.backend.repository.EventTableRepository;
+&nbsp;import org.slf4j.Logger;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;import org.example.backend.repository.UserRepository;
+&nbsp;import org.springframework.transaction.annotation.Transactional;
+&nbsp;import org.springframework.web.bind.annotation.PathVariable;
+&nbsp;
+&nbsp;import java.util.Set;
+&nbsp;
+&nbsp;
+&nbsp;@Service
+&nbsp;@Transactional
+&nbsp;public class UserService {
+&nbsp;
+&nbsp;    private final UserRepository userRepository;
+&nbsp;    private final EventTableRepository eventTableRepository;
+&nbsp;
+&nbsp;    @Autowired
+<b class="fc">&nbsp;    public UserService(UserRepository userRepository, EventTableRepository eventTableRepository) {</b>
+<b class="fc">&nbsp;        this.userRepository = userRepository;</b>
+<b class="fc">&nbsp;        this.eventTableRepository = eventTableRepository;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public User isPasswardCorrect(String userID, String password) {
+<b class="fc">&nbsp;        User user = userRepository.findByUserID(userID);</b>
+<b class="fc">&nbsp;        if(user!=null) {</b>
+<b class="pc">&nbsp;            if(user.getPassword().equals(password)) {</b>
+<b class="fc">&nbsp;                return user;</b>
+&nbsp;            }
+&nbsp;        }
+<b class="fc">&nbsp;        return null;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public User getUserByUserID(String userID) {
+<b class="fc">&nbsp;        return userRepository.findByUserID(userID);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void updateUser(User user) {
+<b class="fc">&nbsp;        userRepository.save(user);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    //这个saveUser用来检查是否存在相同的userID，如果存在则返回false，否则存入数据并返回true
+&nbsp;    public boolean saveUser(User user) {
+<b class="fc">&nbsp;        Logger log = org.slf4j.LoggerFactory.getLogger(UserService.class);</b>
+<b class="fc">&nbsp;        log.info(&quot;to here 1&quot;);</b>
+<b class="fc">&nbsp;        if(userRepository.findByUserID(user.getUserID())==null) {</b>
+<b class="fc">&nbsp;            log.info(&quot;to here 2&quot;);</b>
+<b class="fc">&nbsp;            userRepository.save(user);</b>
+<b class="fc">&nbsp;            log.info(&quot;to here 3&quot;);</b>
+<b class="fc">&nbsp;            return true;</b>
+&nbsp;        }
+&nbsp;        else {
+<b class="fc">&nbsp;            return false;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    public Set&lt;EventTable&gt; getEventTablesByuserID(String userID) {
+<b class="fc">&nbsp;        User user = userRepository.findByUserID(userID);</b>
+<b class="fc">&nbsp;        final Logger log = org.slf4j.LoggerFactory.getLogger(UserService.class);</b>
+<b class="fc">&nbsp;        log.info(&quot;tohere1&quot;);</b>
+<b class="fc">&nbsp;        log.info(user.getUserID());</b>
+&nbsp;//        if (user != null) {
+<b class="fc">&nbsp;        return user.getEventTables();</b>
+&nbsp;//        }
+&nbsp;//        return null; // or return an empty set if preferred
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-05-31 22:23</div>
+</div>
+</body>
+</html>
